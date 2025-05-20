@@ -1,0 +1,48 @@
+{
+  "id": "681156611275882584",
+  "cards": [],
+  "ewallet": 200,
+  "wallet": 0,
+  "cardpacks": [],
+  "profile": {
+    "username": "irlyuqi",
+    "dateJoined": "18/05/2025",
+    "bio": "",
+    "faviorite": "",
+    "border1": "#FF00FF",
+    "border2": "#02DEFB",
+    "background1": "#0F0025",
+    "background2": "#0F0025",
+    "text": "#FFFFFF"
+  },
+  "cooldown": {
+    "drop": 0,
+    "sync": 0,
+    "login": 0,
+    "checkin": 0,
+    "boost": 0,
+    "boosterDrop": 0,
+    "staff": 0
+  },
+  "reminder": {
+    "on": false,
+    "type": "dm",
+    "drop": 0,
+    "sync": 0,
+    "login": 0,
+    "checkin": 0,
+    "boost": 0,
+    "boosterDrop": 0,
+    "staff": 0
+  },
+  "streak": {
+    "login": 0,
+    "sync": 0
+  },
+  "hoard": {
+    "list": [],
+    "limit": 0,
+    "remaining": 0,
+    "reset": 0
+  }
+}

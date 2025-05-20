@@ -1,0 +1,52 @@
+{
+  "id": "1341334198488666132",
+  "cards": [],
+  "ewallet": 200,
+  "wallet": 45000,
+  "cardpacks": [],
+  "profile": {
+    "username": "pyrokn8",
+    "dateJoined": "17/05/2025",
+    "bio": "",
+    "faviorite": "",
+    "border1": "#FF00FF",
+    "border2": "#02DEFB",
+    "background1": "#0F0025",
+    "background2": "#0F0025",
+    "text": "#FFFFFF"
+  },
+  "cooldown": {
+    "drop": 0,
+    "claim": 0,
+    "sync": 1747410760751,
+    "login": 1747410735767,
+    "checkin": 0,
+    "boost": 0,
+    "boosterDrop": 0,
+    "boosterClam": 0,
+    "staff": 1748617430266
+  },
+  "reminder": {
+    "on": false,
+    "type": "dm",
+    "drop": 0,
+    "claim": 0,
+    "sync": 0,
+    "login": 0,
+    "checkin": 0,
+    "boost": 0,
+    "boosterDrop": 0,
+    "boosterClam": 0,
+    "staff": 1748617430270
+  },
+  "streak": {
+    "login": 1000,
+    "sync": 0
+  },
+  "hoard": {
+    "list": [],
+    "limit": 0,
+    "remaining": 0,
+    "reset": 0
+  }
+}

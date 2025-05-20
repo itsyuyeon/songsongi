@@ -1,0 +1,108 @@
+{
+  "id": "1341334198488666132",
+  "cards": [
+    {
+      "code": "5GKGDY",
+      "count": 6
+    },
+    {
+      "code": "4GSGSB",
+      "count": 6
+    },
+    {
+      "code": "3GSWHB",
+      "count": 7
+    },
+    {
+      "code": "4GSGJM",
+      "count": 7
+    },
+    {
+      "code": "5GKGCH",
+      "count": 6
+    },
+    {
+      "code": "3GSWMT",
+      "count": 6
+    },
+    {
+      "code": "3GSWYJ",
+      "count": 6
+    },
+    {
+      "code": "5GKGXT",
+      "count": 6
+    },
+    {
+      "code": "4GSGSR",
+      "count": 6
+    },
+    {
+      "code": "LTCAPL",
+      "count": 5
+    },
+    {
+      "code": "BT25MY",
+      "count": 4
+    },
+    {
+      "code": "BT25MN",
+      "count": 4
+    },
+    {
+      "code": "LTISID",
+      "count": 4
+    },
+    {
+      "count": 21
+    }
+  ],
+  "ewallet": 200,
+  "wallet": 19000,
+  "cardpacks": [],
+  "profile": {
+    "username": "pyrokn8",
+    "dateJoined": "17/05/2025",
+    "bio": "",
+    "faviorite": "",
+    "border1": "#FF00FF",
+    "border2": "#02DEFB",
+    "background1": "#0F0025",
+    "background2": "#0F0025",
+    "text": "#FFFFFF"
+  },
+  "cooldown": {
+    "drop": 1747492587519,
+    "claim": 0,
+    "sync": 0,
+    "login": 0,
+    "checkin": 0,
+    "boost": 0,
+    "boosterDrop": 0,
+    "boosterClam": 0,
+    "staff": 1748617430266
+  },
+  "reminder": {
+    "on": false,
+    "type": "dm",
+    "drop": 1747492587534,
+    "claim": 0,
+    "sync": 0,
+    "login": 0,
+    "checkin": 0,
+    "boost": 0,
+    "boosterDrop": 0,
+    "boosterClam": 0,
+    "staff": 1748617430270
+  },
+  "streak": {
+    "login": 0,
+    "sync": 0
+  },
+  "hoard": {
+    "list": [],
+    "limit": 0,
+    "remaining": 0,
+    "reset": 0
+  }
+}

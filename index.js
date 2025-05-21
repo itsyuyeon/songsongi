@@ -30,7 +30,6 @@ client.once('ready', () => {
   cmd.reminderLoop(client);
 });
 
-
 client.login(process.env.TOKEN);
 
 client.on('messageCreate', async (message) => {

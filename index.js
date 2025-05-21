@@ -27,6 +27,8 @@ if (!process.env.TOKEN) {
   process.exit(1);
 }
 
+console.log("✅ TOKEN loaded:", !!process.env.TOKEN);
+
 client.login(process.env.TOKEN);
 
 client.on('messageCreate', async (message) => {

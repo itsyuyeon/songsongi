@@ -1,13 +1,26 @@
-require('dotenv').config(); // ✅ This should be near the top
+// Load environment variables
+require('dotenv').config();
+
+// Import Discord.js
+const { Client, GatewayIntentBits } = require('discord.js');
+
+// Initialize the client
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+});
+
+// Now log in the client
 client.login(process.env.TOKEN);
 
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+// Optional: log when it's ready
+client.once('ready', () => {
+  console.log(`✅ Logged in as ${client.user.tag}`);
+});
+
 const fs = require('fs');
 const cmd = require('./commands.js');
 const {inCorrectChannel} = require("./channel.js");
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);

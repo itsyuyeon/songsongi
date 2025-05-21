@@ -16,8 +16,8 @@ function cooldown(message) {
     : "Ready";
     const syncTime = inventory.cooldown.sync - Date.now();
     const syncText = syncTime > 0
-    ? `${Math.floor(syncTime / 60000)}m ${Math.floor((syncTime % 60000) / 1000)}s`
-    : "Ready";
+     ? `${Math.floor(syncTime / 60000)}m ${Math.floor((syncTime % 60000) / 1000)}s`
+     : "Ready";
     const loginTime = inventory.cooldown.login - Date.now();
     const loginText = loginTime > 0
     ? `${Math.floor(loginTime / 3600000)}h ${Math.floor((loginTime % 3600000) / 60000)}m`
@@ -30,8 +30,8 @@ function cooldown(message) {
         .addFields(
             { name: "", value: `**Drop:** ${dropText}`, inline: false },
             { name: "", value: `**Claim:** ${clamText}`, inline: false },
-            { name: "", value: `**Sync:** ${syncText}`, inline: false },
-            { name: "", value: `**Login:** ${loginText}`, inline: false },
+            { name: "", value: `**Sync:** ${syncMin}m ${syncSec}s`, inline: false },
+            { name: "", value: `**Login:** ${loginHrs}h ${loginMin}m`, inline: false },
         )
     // check if user is a server booster
     if (message.member && message.member.premiumSince) {

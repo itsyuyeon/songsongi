@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 

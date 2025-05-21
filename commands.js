@@ -112,4 +112,32 @@ module.exports = {
     viewArchive,
     archive,
     unarchive,
+
 };
+
+function reminderLoop(client) {
+    setInterval(() => {
+        const inventoryFolder = './inventory';
+        const files = fs.readdirSync(inventoryFolder);
+
+        for (const file of files) {
+            if (!file.endsWith('.json')) continue;
+
+            const userId = file.replace('.json', '');
+            const inventory = JSON.parse(fs.readFileSync(`${inventoryFolder}/${file}`, 'utf8'));
+
+            // Loop through cooldowns and check if reminders are due
+            for (const command in inventory.reminders) {
+                const reminder = inventory.reminders[command];
+                if (Date.now() >= reminder.time && !reminder.sent) {
+                    const user = client.users.cache.get(userId);
+                    if (user) {
+                        user.send(`⏰ Your **${command}** command is ready to use again!`);
+                        inventory.reminders[command].sent = true;
+                        fs.writeFileSync(`${inventoryFolder}/${file}`, JSON.stringify(inventory, null, 2));
+                    }
+                }
+            }
+        }
+    }, 60 * 1000); // Runs every 60 seconds
+}

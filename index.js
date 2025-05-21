@@ -1,3 +1,5 @@
+const config = require('./config.json');
+
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
@@ -32,12 +34,11 @@ client.once('ready', () => {
   cmd.reminderLoop(client);
 });
 
-client.login(process.env.TOKEN);
-
 client.on('messageCreate', async (message) => {
+    console.log(`📨 Message received: ${message.content} in ${message.channel.id}`);
     if (message.author.bot) return;
     if (message.content.startsWith(config.prefix)) { // Check if the message starts with the prefix
-        const args = message.content.slice(1).trim().split(/ +/);
+        const args = message.content.slice(config.prefix.length).trim().split(/ +/);
         const command = args.shift().toLowerCase();
         // Check if the user is in the database
         if (command === 'start') {

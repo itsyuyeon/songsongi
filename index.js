@@ -24,9 +24,6 @@ client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-
-console.log("✅ TOKEN loaded:", !!process.env.TOKEN);
-
 client.login(process.env.TOKEN);
 
 client.on('messageCreate', async (message) => {

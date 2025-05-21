@@ -21,6 +21,8 @@ if (!process.env.TOKEN) {
   process.exit(1);
 }
 
+console.log("🔍 Token from Railway:", process.env.TOKEN?.slice(0, 10)); // only show part
+
 client.login(process.env.TOKEN);
 
 client.once('ready', () => {

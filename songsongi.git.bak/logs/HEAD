@@ -1,0 +1,34 @@
+0000000000000000000000000000000000000000 e959bec7f0b10665d189b7155a7168bc3169959f wynnie <wyn@wynnies-MacBook-Air.local> 1747757235 +0800	commit (initial): Initial commit
+e959bec7f0b10665d189b7155a7168bc3169959f 0000000000000000000000000000000000000000 wynnie <wyn@wynnies-MacBook-Air.local> 1747757275 +0800	Branch: renamed refs/heads/main to refs/heads/main
+e959bec7f0b10665d189b7155a7168bc3169959f e959bec7f0b10665d189b7155a7168bc3169959f wynnie <wyn@wynnies-MacBook-Air.local> 1747757275 +0800	Branch: renamed refs/heads/main to refs/heads/main
+e959bec7f0b10665d189b7155a7168bc3169959f 0000000000000000000000000000000000000000 wynnie <wyn@wynnies-MacBook-Air.local> 1747757433 +0800	Branch: renamed refs/heads/main to refs/heads/main
+e959bec7f0b10665d189b7155a7168bc3169959f e959bec7f0b10665d189b7155a7168bc3169959f wynnie <wyn@wynnies-MacBook-Air.local> 1747757433 +0800	Branch: renamed refs/heads/main to refs/heads/main
+e959bec7f0b10665d189b7155a7168bc3169959f 0000000000000000000000000000000000000000 wynnie <wyn@wynnies-MacBook-Air.local> 1747757461 +0800	Branch: renamed refs/heads/main to refs/heads/main
+e959bec7f0b10665d189b7155a7168bc3169959f e959bec7f0b10665d189b7155a7168bc3169959f wynnie <wyn@wynnies-MacBook-Air.local> 1747757461 +0800	Branch: renamed refs/heads/main to refs/heads/main
+e959bec7f0b10665d189b7155a7168bc3169959f 37e900cdc523ec4ad5bc553f1523005b00c17094 wynnie <wyn@wynnies-MacBook-Air.local> 1747759357 +0800	commit: Fix: removed duplicate syncTime declaration
+37e900cdc523ec4ad5bc553f1523005b00c17094 37e900cdc523ec4ad5bc553f1523005b00c17094 wynnie <wyn@wynnies-MacBook-Air.local> 1747759437 +0800	checkout: moving from main to dev-branch
+37e900cdc523ec4ad5bc553f1523005b00c17094 0000000000000000000000000000000000000000 wynnie <wyn@wynnies-MacBook-Air.local> 1747759759 +0800	Branch: renamed refs/heads/dev-branch to refs/heads/main
+0000000000000000000000000000000000000000 37e900cdc523ec4ad5bc553f1523005b00c17094 wynnie <wyn@wynnies-MacBook-Air.local> 1747759759 +0800	Branch: renamed refs/heads/dev-branch to refs/heads/main
+37e900cdc523ec4ad5bc553f1523005b00c17094 0000000000000000000000000000000000000000 wynnie <wyn@wynnies-MacBook-Air.local> 1747759820 +0800	Branch: renamed refs/heads/main to refs/heads/main
+37e900cdc523ec4ad5bc553f1523005b00c17094 37e900cdc523ec4ad5bc553f1523005b00c17094 wynnie <wyn@wynnies-MacBook-Air.local> 1747759820 +0800	Branch: renamed refs/heads/main to refs/heads/main
+37e900cdc523ec4ad5bc553f1523005b00c17094 49528c7bd017cbf96005fa8cececd9e6c609cea7 wynnie <wyn@wynnies-MacBook-Air.local> 1747760198 +0800	commit: Ignore .env file and remove from Git
+49528c7bd017cbf96005fa8cececd9e6c609cea7 dd15da6d8a48d18a884fedd4332233a52bf6318f wynnie <wyn@wynnies-MacBook-Air.local> 1747760269 +0800	commit: Remove bot token and ignore config.json
+dd15da6d8a48d18a884fedd4332233a52bf6318f 47f941ae6c9d4547835ccb56283f87cdfae5cba2 wynnie <wyn@wynnies-MacBook-Air.local> 1747786446 +0800	commit: Fix: removed duplicate syncTime declaration
+47f941ae6c9d4547835ccb56283f87cdfae5cba2 e959bec7f0b10665d189b7155a7168bc3169959f wynnie <wyn@wynnies-MacBook-Air.local> 1747788012 +0800	reset: moving to origin/main
+e959bec7f0b10665d189b7155a7168bc3169959f 8a9af510e18b96cf35543545c478d999682c29ff wynnie <wyn@wynnies-MacBook-Air.local> 1747788119 +0800	commit: Add .gitignore to clean unneeded files
+8a9af510e18b96cf35543545c478d999682c29ff e02eb1d1ffdb15ca8dbf54130475b54856ec3908 wynnie <wyn@wynnies-MacBook-Air.local> 1747788510 +0800	commit: Update cooldown.js and other files
+e02eb1d1ffdb15ca8dbf54130475b54856ec3908 88fbc25e5954f0442cbffc72fffa294cabc9df55 wynnie <wyn@wynnies-MacBook-Air.local> 1747788709 +0800	commit: Fix: remove duplicate syncTime declaration
+88fbc25e5954f0442cbffc72fffa294cabc9df55 f1b6c815427cdcf66a31c77505df764f57192ea3 wynnie <wyn@wynnies-MacBook-Air.local> 1747788995 +0800	commit: Fix cooldown.js crash (undeclared sync/login vars)
+f1b6c815427cdcf66a31c77505df764f57192ea3 af5b444c35da9848d24545e169db19c1ea0e98e2 wynnie <wyn@wynnies-MacBook-Air.local> 1747789467 +0800	commit: Fix cooldown.js crash
+af5b444c35da9848d24545e169db19c1ea0e98e2 c569367465b6264c4d0ed3a0fa9e640ab35b9e3f wynnie <wyn@wynnies-MacBook-Air.local> 1747789743 +0800	commit: Fix cooldown.js crash
+c569367465b6264c4d0ed3a0fa9e640ab35b9e3f 72ebe4ada2fc19058d6bda1bdaf4f6cce0366b84 wynnie <wyn@wynnies-MacBook-Air.local> 1747826608 +0800	commit: Add dotenv to dependencies
+72ebe4ada2fc19058d6bda1bdaf4f6cce0366b84 ce3b0600ff150f7167ce1032d4ac44fb9c43a534 wynnie <wyn@wynnies-MacBook-Air.local> 1747826911 +0800	commit: Fix: login called before client defined
+ce3b0600ff150f7167ce1032d4ac44fb9c43a534 5f6a321eb7bc4cefaf4472f1a17ec1fa03e4e439 wynnie <wyn@wynnies-MacBook-Air.local> 1747827128 +0800	commit: Clean index.js, remove duplicate ready and token safety
+5f6a321eb7bc4cefaf4472f1a17ec1fa03e4e439 2e78ab0ea5ef1941a2df0a32adff87101dd5e2b0 wynnie <wyn@wynnies-MacBook-Air.local> 1747827783 +0800	commit: Update bot code and fixes
+2e78ab0ea5ef1941a2df0a32adff87101dd5e2b0 edcb1a89652da12061b25eaa21bbf91ad90496d5 wynnie <wyn@wynnies-MacBook-Air.local> 1747828042 +0800	commit: Update bot code and fixes
+edcb1a89652da12061b25eaa21bbf91ad90496d5 7399cf3af5ddbb570137f287537f07a6517451a0 wynnie <wyn@wynnies-MacBook-Air.local> 1747828460 +0800	commit: Ensure TOKEN is loaded from Railway
+7399cf3af5ddbb570137f287537f07a6517451a0 423df9545b2b6d31ec690a05ce8c9a12e433a914 wynnie <wyn@wynnies-MacBook-Air.local> 1747829862 +0800	commit: Ensure TOKEN is loaded from Railway
+423df9545b2b6d31ec690a05ce8c9a12e433a914 c1f8774a5ea4997aa9da1fb8d8211de30f223c6c wynnie <wyn@wynnies-MacBook-Air.local> 1747830293 +0800	commit: Ensure TOKEN is loaded from Railway
+c1f8774a5ea4997aa9da1fb8d8211de30f223c6c 5deb8e99fbba2a48941ed8e0129e8d0001130ac1 wynnie <wyn@wynnies-MacBook-Air.local> 1747830494 +0800	commit: Fix: removed duplicate login and config.token
+5deb8e99fbba2a48941ed8e0129e8d0001130ac1 83adf12e8d9fe27d2d1fe376360d18e8071ecd50 wynnie <wyn@wynnies-MacBook-Air.local> 1747832113 +0800	commit: Fix: ensure TOKEN loads from Railway
+83adf12e8d9fe27d2d1fe376360d18e8071ecd50 2cea2174ab616e95a00d5fd53615d219bf596269 wynnie <wyn@wynnies-MacBook-Air.local> 1747832171 +0800	commit: Fix: ensure TOKEN loads from Railway

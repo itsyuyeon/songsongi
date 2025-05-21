@@ -24,5 +24,5 @@ function inCorrectChannel(message, command) {
 }
 
 module.exports = {
-    inCorrectChannel
-}
+  inCorrectChannel
+};

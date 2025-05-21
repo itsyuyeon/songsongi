@@ -1,6 +1,10 @@
-require('dotenv').config(); // MUST be at the top!
-
+require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
+const fs = require('fs');
+
+// ✅ Move this up before using any `cmd`
+const cmd = require('./commands.js');
+const { inCorrectChannel } = require('./channel.js');
 
 const client = new Client({
   intents: [
@@ -10,8 +14,7 @@ const client = new Client({
   ]
 });
 
-// DEBUG: check if token is loaded
-console.log("✅ TOKEN loaded:", !!process.env.TOKEN); // true = OK, false = not found
+console.log("✅ TOKEN loaded:", !!process.env.TOKEN);
 
 if (!process.env.TOKEN) {
   console.error('❌ TOKEN is missing. Set it in Railway Variables.');
@@ -22,7 +25,11 @@ client.login(process.env.TOKEN);
 
 client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
+
+  // ✅ Place it here: AFTER login & cmd are both available
+  cmd.reminderLoop(client);
 });
+
 
 client.login(process.env.TOKEN);
 

@@ -1,3 +1,6 @@
+require('dotenv').config(); // ✅ This should be near the top
+client.login(process.env.TOKEN);
+
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 const cmd = require('./commands.js');

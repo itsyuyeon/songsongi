@@ -296,7 +296,6 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-client.login(config.token);
 cmd.reminderLoop(client); // Start the reminder loop
 
 // There is always a little bit of time between then and now, so keep going! :)

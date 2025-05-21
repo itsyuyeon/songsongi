@@ -1,13 +1,7 @@
-// Load environment variables
-require('dotenv').config();
+require('dotenv').config(); // MUST be at the top!
 
-// Import Discord.js
 const { Client, GatewayIntentBits } = require('discord.js');
-const fs = require('fs');
-const cmd = require('./commands.js');
-const { inCorrectChannel } = require('./channel.js');
 
-// Initialize the client
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -16,16 +10,20 @@ const client = new Client({
   ]
 });
 
-// Log when ready
-client.once('ready', () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
-});
+// DEBUG: check if token is loaded
+console.log("✅ TOKEN loaded:", !!process.env.TOKEN); // true = OK, false = not found
 
-// Login using env token
 if (!process.env.TOKEN) {
   console.error('❌ TOKEN is missing. Set it in Railway Variables.');
   process.exit(1);
 }
+
+client.login(process.env.TOKEN);
+
+client.once('ready', () => {
+  console.log(`✅ Logged in as ${client.user.tag}`);
+});
+
 
 console.log("✅ TOKEN loaded:", !!process.env.TOKEN);
 

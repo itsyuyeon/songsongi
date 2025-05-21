@@ -18,9 +18,12 @@ const channels = {
     burn: ["1359095351264411728", "1359095644769357995", "1374757960269561907"],
 }
 
+
 function inCorrectChannel(message, command) {
-    const channelID = message.channel.id;
-    return channels[command].includes(channelID);
+  const channelID = message.channel.id;
+  const isCorrect = channels[command]?.includes(channelID);
+  console.log(`Channel Check → Command: ${command}, Channel: ${channelID}, Allowed: ${isCorrect}`);
+  return isCorrect;
 }
 
 module.exports = {

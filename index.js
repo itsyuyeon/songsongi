@@ -3,28 +3,31 @@ require('dotenv').config();
 
 // Import Discord.js
 const { Client, GatewayIntentBits } = require('discord.js');
+const fs = require('fs');
+const cmd = require('./commands.js');
+const { inCorrectChannel } = require('./channel.js');
 
 // Initialize the client
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 });
 
-// Now log in the client
-client.login(process.env.TOKEN);
-
-// Optional: log when it's ready
+// Log when ready
 client.once('ready', () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 });
 
-const fs = require('fs');
-const cmd = require('./commands.js');
-const {inCorrectChannel} = require("./channel.js");
-const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+// Login using env token
+if (!process.env.TOKEN) {
+  console.error('❌ TOKEN is missing. Set it in Railway Variables.');
+  process.exit(1);
+}
 
-client.once('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-});
+client.login(process.env.TOKEN);
 
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;

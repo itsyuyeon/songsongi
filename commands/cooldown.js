@@ -30,8 +30,8 @@ function cooldown(message) {
         .addFields(
             { name: "", value: `**Drop:** ${dropText}`, inline: false },
             { name: "", value: `**Claim:** ${clamText}`, inline: false },
-            { name: "", value: `**Sync:** ${syncMin}m ${syncSec}s`, inline: false },
-            { name: "", value: `**Login:** ${loginHrs}h ${loginMin}m`, inline: false },
+            { name: "", value: `**Sync:** ${syncText}`, inline: false },
+            { name: "", value: `**Login:** ${loginText}`, inline: false }
         )
     // check if user is a server booster
     if (message.member && message.member.premiumSince) {

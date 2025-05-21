@@ -80,6 +80,8 @@ client.on('messageCreate', async (message) => {
             case 'I':
                 cmd.inventory(message, args[0]);break;
             case 'shop':
+            case 'Shop':
+            case 'SHOP':
                 if (!inCorrectChannel(message, 'shop')) return;
                 cmd.shop(message);break;
             case 'buy':
@@ -91,7 +93,6 @@ client.on('messageCreate', async (message) => {
             case 'GIFT':
                 cmd.gift(message, args[0], args[1], args[2]);break;
             case 'pay':
-            case 'p':
             case 'PAY':
                 cmd.pay(message, args[0], args[1]);break;
             case 'uploadcard':

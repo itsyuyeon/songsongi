@@ -87,7 +87,7 @@ client.on('messageCreate', async (message) => {
             case 'inventory':
             case 'INV':
             case 'I':
-                cmd.inventory(message, args[0]);break;
+                cmd.balance(message, args[0]); // Pass mention or ID if any 
 
             case 'shop':
             case 'Shop':
@@ -204,7 +204,7 @@ client.on('messageCreate', async (message) => {
 
             case 'balance':
             case 'bal':
-                cmd.balance(message);break;
+                cmd.balance(message, args[0]); // Pass mention or ID if any                
 
             case 'deposit':
                 if (!inCorrectChannel(message, 'deposit')) return;

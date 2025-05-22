@@ -235,15 +235,15 @@ if (timeElapsed < 30000 && !isOriginalUser) {
     var message = "";
     switch (card.rarity) {
         case "3G":
-            message = `<@${interaction.user.id}> has detected a **weak signal** — ${card.code} locked`;
+            message = `<@${interaction.user.id}> has detected a **weak signal** — \`${card.code}\` locked`;
         case "4G":
-            message = `<@${interaction.user.id}> has established a **stable connection**. 4G signal received: ${card.code}`;
+            message = `<@${interaction.user.id}> has established a **stable connection**. 4G signal received: \`${card.code}\``;
             break;
         case "5G":
-            message = `<@${interaction.user.id}> has achieved a **high-speed sync**! You pulled: ${card.code}`;
+            message = `<@${interaction.user.id}> has achieved a **high-speed sync**! You pulled: \`${card.code}\``;
             break;
         default:
-            message = `<@${interaction.user.id}> has detected a **weak signal** — ${card.code} locked`;
+            message = `<@${interaction.user.id}> has detected a **weak signal** — \`${card.code}\` locked`;
             break;
     }
     interaction.reply({ content: message, ephemeral: false });

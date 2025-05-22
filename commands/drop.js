@@ -188,7 +188,7 @@ if (timeElapsed < 30000 && !isOriginalUser) {
             // Optionally delete the ephemeral message after countdown finishes
             try {
                 await interaction.editReply({
-                    content: `⏱️ You can now claim the drop!`
+                    content: `You can now claim the drop!`
                 });
             } catch (e) {
                 console.error('Failed to edit reply:', e);
@@ -198,7 +198,7 @@ if (timeElapsed < 30000 && !isOriginalUser) {
 
         try {
             await interaction.editReply({
-                content: `⏱️ You must wait ${timeLeft} second${timeLeft !== 1 ? 's' : ''} before claiming someone else's drop!`
+                content: `You must wait ${timeLeft} second${timeLeft !== 1 ? 's' : ''} before claiming someone else's drop!`
             });
         } catch (e) {
             clearInterval(interval); // stop trying if it errors (e.g., interaction no longer valid)
@@ -235,16 +235,15 @@ if (timeElapsed < 30000 && !isOriginalUser) {
     var message = "";
     switch (card.rarity) {
         case "3G":
-            message = `@${interaction.user.username} has detected a **weak signal** — ${card.code} locked`;
-            break;
+            message = `<@${interaction.user.id}> has detected a **weak signal** — ${card.code} locked`;
         case "4G":
-            message = `@${interaction.user.username} has established a **stable connection**. 4G signal received: ${card.code}`;
+            message = `<@${interaction.user.id}> has established a **stable connection**. 4G signal received: ${card.code}`;
             break;
         case "5G":
-            message = `@${interaction.user.username} has achieved a **high-speed sync**! You pulled: ${card.code}`;
+            message = `<@${interaction.user.id}> has achieved a **high-speed sync**! You pulled: ${card.code}`;
             break;
         default:
-            message = `@${interaction.user.username} has detected a **weak signal** — ${card.code} locked`;
+            message = `<@${interaction.user.id}> has detected a **weak signal** — ${card.code} locked`;
             break;
     }
     interaction.reply({ content: message, ephemeral: false });
@@ -287,6 +286,9 @@ async function paidDrop(message) {
     } else if (selectedCards.rarity === "5G") {
         colour = "#b981ff";
     }
+
+    const imagePath = path.resolve(__dirname, `../cards/${selectedCards.code}.png`);
+    const imageAttachment = new AttachmentBuilder(imagePath);
 
     const embed = new EmbedBuilder()
         .setColor(colour)

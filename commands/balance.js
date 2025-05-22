@@ -7,7 +7,7 @@ async function balance(message) {
         .setColor("#F9768C")
         .setTitle(`${message.author.username}'s Balance`)
         .addFields(
-            { name: "Syncbank:", value: `${userData.ewallet}`, inline: true },
+            { name: "Syncbank:", value: `${userData.syncbank}`, inline: true },
             { name: "Wallet:", value: `${userData.wallet}`, inline: true }
         )
     message.channel.send({ embeds: [embed] });    

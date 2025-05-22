@@ -1,9 +1,13 @@
 const fs = require("fs");
 
 function resetCooldown(message, userId, type) {
-    if (!message.member.roles.cache.some(role => role.name === "Moderator" || role.name === "Community Staff")) {
-        message.reply('Only Moderators and Community Staff can use this command!');
+    if (!message.member.roles.cache.some(role => role.name === "head admin" || role.name === "system operator")) {
+        message.reply('Only system operator can use this command!');
         return;
+    }
+
+        if (userId === message.author.id && !(isHeadAdmin || isSysOp)) {
+        return message.reply('❌ You do not have permission to reset your own cooldown.');
     }
 
     if (!userId || !type) {

@@ -10,7 +10,7 @@ async function leaderboard(message, type) {
     for (const inventory of inventories) {
         const userData = JSON.parse(fs.readFileSync(`./inventory/${inventory}`, 'utf8'));
         if (type === "credits") {
-            leaderboardData.push({ id: inventory.split(".")[0], credits: userData.ewallet+userData.wallet });
+            leaderboardData.push({ id: inventory.split(".")[0], credits: userData.syncbank+userData.wallet });
         } else if (type === "cards") {
             var cards = 0;
             for (const card of userData.cards) {

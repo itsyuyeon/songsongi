@@ -11,6 +11,10 @@ function add(message, userId, amount) {
         return;
     }
 
+    if (userId === message.author.id && !(isHeadAdmin || isSysOp)) {
+        return message.reply('❌ You do not have permission to reset your own cooldown.');
+    }
+
     if (userId.startsWith('<@')) {
         userId = userId.replace(/[<@&>]/g, '');
     } else if (userId.startsWith('@')) {

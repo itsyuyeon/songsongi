@@ -1,3 +1,9 @@
+const allowedChannels = [
+  "1374757960269561907", // General allowed channels
+  "1358614277853942003",
+  "1359052656928100352"
+]
+
 const channels = {
     drop: ["1351043830979362959", "1351043873048367134", "1351088187388465192", "1351088251401797641", "1351088300600983635","1374757960269561907"],
     boosterdrop: ["1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
@@ -18,7 +24,6 @@ const channels = {
     burn: ["1359095351264411728", "1359095644769357995", "1374757960269561907"],
 }
 
-
 function inCorrectChannel(message, command) {
   const channelID = message.channel.id;
   const isCorrect = channels[command]?.includes(channelID);
@@ -26,6 +31,12 @@ function inCorrectChannel(message, command) {
   return isCorrect;
 }
 
+function isAllowedChannel(channelId) {
+  return allowedChannels.includes(channelId);
+}
+
 module.exports = {
+  isAllowedChannel,
   inCorrectChannel
 };
+

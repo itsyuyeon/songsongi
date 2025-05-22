@@ -6,7 +6,7 @@ const fs = require('fs');
 
 // ✅ Move this up before using any `cmd`
 const cmd = require('./commands.js');
-const { inCorrectChannel } = require('./channel.js');
+const { inCorrectChannel, isAllowedChannel} = require('./channel.js');
 
 const client = new Client({
   intents: [
@@ -36,14 +36,23 @@ client.once('ready', () => {
 
 client.on('messageCreate', async (message) => {
     console.log(`📨 Message received: ${message.content} in ${message.channel.id}`);
+    
     if (message.author.bot) return;
-    if (message.content.startsWith(config.prefix)) { // Check if the message starts with the prefix
+
+    // ✅ Early global allowed channel check
+    if (!isAllowedChannel(message.channel.id)) {
+        console.log("⛔ Message blocked (not in allowed channel)");
+        return;
+    }
+
+    if (!message.content.startsWith(config.prefix)) return; { // Check if the message starts with the prefix
         const args = message.content.slice(config.prefix.length).trim().split(/ +/);
         const command = args.shift().toLowerCase();
         // Check if the user is in the database
         if (command === 'start') {
             cmd.start(message);
             return;
+            
         }
         if (!cmd.hasStarted(message.author.id)) {
             return cmd.notStartedMessage(message);
@@ -56,7 +65,7 @@ client.on('messageCreate', async (message) => {
         }
         // Check if the user is blacklisted
         if (cmd.isBlacklisted(message.author.id)) {
-            return cmd.blacklistMessage(message);
+            return cmd.blacklistMessage(message);   
         }
 
         switch (command) {
@@ -285,6 +294,8 @@ client.on('messageCreate', async (message) => {
                 }
                 cmd.drop(message);
                 cmd.setReminder(message.author.id, 'boosterDrop', 5);
+            case 'claim':
+                cmd.claimCard(message);
                 break;
         }
     }
@@ -304,16 +315,3 @@ client.on('interactionCreate', async interaction => {
 });
 
 cmd.reminderLoop(client); // Start the reminder loop
-
-// There is always a little bit of time between then and now, so keep going! :)
-// https://docs.google.com/spreadsheets/d/1uE0NpfRrrynJOY0VWlsgubuu4wPpg_XVNSZ2uyyd4Fw/edit?usp=sharing
-
-// remaining things todo:
-//  - mod log for transactions
-//  - emojis
-//  - format numbers
-//  - server wise
-//  - claim/booster claim cooldown
-//  - pitty system
-//  - goodnight boostgoodnight command
-//  - task command

@@ -40,7 +40,7 @@ function help(message) {
         )
         .setFooter({ 
             text: 'Parameters: <required> [optional] | Prefix: . | Time format: 1h, 2d | Filters: g=group, n=name, r=rarity'
-        });
+        });-
 
     message.reply({ embeds: [embed] });
 }

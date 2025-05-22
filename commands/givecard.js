@@ -1,8 +1,13 @@
 const fs = require('fs');
 
 function giveCard(message, userId, code, amount) {
-    if (!message.member.roles.cache.some(role => role.name === "system operator")) {
-        message.reply('Only system operators can use this command!');
+     const hasAdminRole = message.member.roles.cache.some(role =>
+        role.name === "head admin" || role.name === "system operator"
+    );
+    const isHeadAdmin = message.member.roles.cache.some(role => role.name === "head admin");
+
+    if (!hasAdminRole) {
+        message.reply('Only system operator or head admin can use this command!');
         return;
     }
 

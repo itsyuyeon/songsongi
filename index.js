@@ -293,9 +293,6 @@ client.on('messageCreate', async (message) => {
                 }
                 cmd.drop(message);
                 cmd.setReminder(message.author.id, 'boosterDrop', 5);
-            case 'claim':
-                cmd.claimCard(message);
-                break;
         }
     }
 });

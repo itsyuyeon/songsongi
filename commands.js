@@ -40,11 +40,9 @@ const {sub} = require("./commands/sub.js");
 const {resetCooldown} = require("./commands/resetcooldown.js");
 const {setLogin} = require("./commands/setlogin.js");
 const {viewArchive, archive, unarchive} = require("./commands/archive.js");
-const { claimCard } = require("./commands/claim.js");
 // some of these aren't commands, but sub processes for commands
 module.exports = {
     drop,
-    claimCard,
     shop,
     inventory,
     buy,

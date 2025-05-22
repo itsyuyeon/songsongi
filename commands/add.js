@@ -1,11 +1,16 @@
 const fs = require('fs');
 
 function add(message, userId, amount) {
-    if (!message.member.roles.cache.some(role => role.name === "system operator")) {
-        message.reply('Only system operators can use this command!');
+    const hasAdminRole = message.member.roles.cache.some(role =>
+        role.name === "head admin" || role.name === "system operator"
+    );
+    const isHeadAdmin = message.member.roles.cache.some(role => role.name === "head admin");
+
+    if (!hasAdminRole) {
+        message.reply('Only system operator or head admin can use this command!');
         return;
     }
-
+    
     if (!userId || !amount) {
         message.channel.send('Usage: `.add <@username/User ID> <specific number>`');
         return;

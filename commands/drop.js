@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const { createCanvas, loadImage } = require('canvas');
 const lastClaimTimestamps = new Map();
@@ -74,6 +75,7 @@ function getRandomCards(metadata, count) {
         '5G': 30,
         '4G': 50,
         '3G': 70,
+        'PRISM': 10,
     };
     var max = 0;for (const weight in rarityWeights) {max += rarityWeights[weight];};
     for (let i = 0; i < count; i++) {
@@ -113,16 +115,17 @@ function sortByRarity(a, b) {
 
 function createCardButtons(cards) {
     const rarityEmotes = {
-        "3G": "<:3G:1359014247782289529>",
-        "4G": "<:4G:1359014234088018171>",
-        "5G": "<:5G:1359014171353682020>"
+        "3G": "<:3G:1358000209870717000>",
+        "4G": "<:4G:1358000213322629230>",
+        "5G": "<:5G:1358000216078417920>",
+        "PRISM": "<:gyuninigift:1365197464961024041>"
     };
 
     return cards.map(card => {
         const emote = rarityEmotes[card.rarity] || "";
         return new ButtonBuilder()
             .setCustomId(`pick_${card.code}`)
-            .setLabel(`${emote} ${card.code} ${card.name}`)
+            .setLabel(`${emote} ${card.code} ${card.name}`) // ✅ uses the emote here
             .setStyle(ButtonStyle.Secondary);
     });
 }
@@ -151,6 +154,7 @@ async function getCachedOrNewImage(cards, cachePath) {
     const buffer = canvas.toBuffer('image/png');
     fs.writeFileSync(cachePath, buffer);
     return new AttachmentBuilder(cachePath);
+
 }
 
 function generateCacheFileName(cardCodes) {
@@ -247,11 +251,15 @@ if (timeElapsed < 30000 && !isOriginalUser) {
     switch (card.rarity) {
         case "3G":
             message = `<@${interaction.user.id}> has detected a **weak signal** — \`${card.code}\` locked`;
+            break;
         case "4G":
             message = `<@${interaction.user.id}> has established a **stable connection**. 4G signal received: \`${card.code}\``;
             break;
         case "5G":
             message = `<@${interaction.user.id}> has achieved a **high-speed sync**! You pulled: \`${card.code}\``;
+            break;
+        case "PRISM":
+            message = `<@${interaction.user.id}> has achieved a **DIARY**! You pulled: \`${card.code}\``;
             break;
         default:
             message = `<@${interaction.user.id}> has detected a **weak signal** — \`${card.code}\` locked`;
@@ -270,6 +278,13 @@ if (timeElapsed < 30000 && !isOriginalUser) {
     // prevent the user from claiming the drop again
     dropInfo.bannedUsers.push(interaction.user.id);
     activeDrops.set(interaction.user.id, dropInfo);
+
+    const inventory = JSON.parse(fs.readFileSync(`./inventory/${interaction.user.id}.json`, 'utf8'));
+    if (!userData.cooldown) userData.cooldown = {};
+    userData.cooldown.claim = Date.now() + 5 * 60 * 1000;
+
+    inventory.cooldown.claim = Date.now() + 5 * 60 * 1000; // 5 mins
+    fs.writeFileSync(`./inventory/${interaction.user.id}.json`, JSON.stringify(inventory, null, 2));
 
 }
 
@@ -298,6 +313,8 @@ async function paidDrop(message) {
         colour = "#ffb381";
     } else if (selectedCards.rarity === "5G") {
         colour = "#b981ff";
+    } else if (selectedCards.rarity === "PRISM") {
+        colour = "#c6deff";
     }
 
     const imagePath = path.resolve(__dirname, `../cards/${selectedCards.code}.png`);
@@ -309,7 +326,10 @@ async function paidDrop(message) {
         .setImage(`attachment://${selectedCards.code}.png`)
         .setDescription(`**Transaction confirmed!** You just spent 250 credits and received Signal Data : ${selectedCards.code}\n-# Your remaining balance : ${userData.wallet} credits`)
 
-    message.reply({embeds: [embed]});
+    message.reply({
+    embeds: [embed],
+    files: [imageAttachment] // <== Add this
+});
 }
 
 

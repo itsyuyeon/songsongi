@@ -3,7 +3,7 @@ const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 
 async function view(message, cardCode) {
     const metadata = JSON.parse(fs.readFileSync(`./cards/metadata.json`, 'utf8'));
-    const inventories = JSON.parse(fs.readFileSync(`./data/inventories.json`, 'utf8'));
+    const inventories = JSON.parse(fs.readFileSync(`./data/inventory.js`, 'utf8'));
     const userId = message.author.id;
     const userInventory = inventories[userId] || {};
 

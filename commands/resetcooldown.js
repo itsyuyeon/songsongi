@@ -38,6 +38,11 @@ function resetCooldown(message, userId, type) {
         return;
     }
 
+    if (!receiverData.cooldown || !(type in receiverData.cooldown)) {
+    message.channel.send("Invalid or unset cooldown type!");
+    return;
+    }
+
     const receiverData = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
     if (receiverData.cooldown[type] === undefined) {
         message.channel.send("Invalid command!");

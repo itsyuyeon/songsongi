@@ -14,8 +14,10 @@ function shop(message) {
         "HYPER": "<:hyperpack:1358092898863808604>"
         };
 
-        const emote = itemEmotes[item.code.toUpperCase()] || "";
-        description += `${emote} \`${item.code}\` **${item.name}**: ${item.price} <:credits:13579921504571269928>\n`;
+        const typeKey = (item.type || item.code || '').toString().toUpperCase(); // fallback-safe
+        const emote = itemEmotes[typeKey] || "";
+        description += `${emote} \`${item.code}\` **${item.name}**: ${item.price} credits\n`;
+
 
     });
 

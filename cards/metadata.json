@@ -7,7 +7,7 @@
         "idolname": "Mina",
         "series": "BT25",
         "price": 1,
-        "name": "Dear Dairy Mina",
+        "name": "Mina",
         "image": "./cards/BT25MN.png",
         "isArchived": false
     },
@@ -19,7 +19,7 @@
         "idolname": "Myoi",
         "series": "BT25",
         "price": 1,
-        "name": "Dear Diary Myoi",
+        "name": "Myoi",
         "image": "./cards/BT25MY.png",
         "isArchived": false
     },
@@ -129,7 +129,7 @@
         "idolname": "Gyuvin",
         "series": "S01",
         "price": 1,
-        "name": "ZeroBaseOne Gyuvin",
+        "name": "Gyuvin",
         "image": "./cards/3GBPGV.png",
         "isArchived": false
     },
@@ -141,7 +141,7 @@
         "idolname": "Gunwook",
         "series": "S01",
         "price": 1,
-        "name": "ZeroBaseOne Gunwook",
+        "name": "Gunwook",
         "image": "./cards/3GBPGW.png",
         "isArchived": false
     },
@@ -153,7 +153,7 @@
         "idolname": "Zhang Hao",
         "series": "S01",
         "price": 1,
-        "name": "ZeroBaseOne Zhang Hao",
+        "name": "Zhang Hao",
         "image": "./cards/3GBPZH.png",
         "isArchived": false
     },
@@ -165,7 +165,7 @@
         "idolname": "Matthew",
         "series": "S01",
         "price": 1,
-        "name": "ZeroBaseOne Matthew",
+        "name": "Matthew",
         "image": "./cards/3GSWMT.png",
         "isArchived": false
     },
@@ -177,7 +177,7 @@
         "idolname": "Yujin",
         "series": "S01",
         "price": 1,
-        "name": "ZeroBaseOne Yujin",
+        "name": "Yujin",
         "image": "./cards/3GSWYJ.png",
         "isArchived": false
     },
@@ -190,7 +190,7 @@
         "idolname": "Jeemin",
         "series": "S01",
         "price": 1,
-        "name": "IZNA Jeemin",
+        "name": "Jeemin",
         "image": "./cards/4GSGJM.png",
         "isArchived": false
     },
@@ -202,7 +202,7 @@
         "idolname": "Saebi",
         "series": "S01",
         "price": 1,
-        "name": "IZNA Saebi",
+        "name": "Saebi",
         "image": "./cards/4GSGSB.png",
         "isArchived": false
     },
@@ -214,7 +214,7 @@
         "idolname": "Sarang",
         "series": "S01",
         "price": 1,
-        "name": "IZNA Sarang",
+        "name": "Sarang",
         "image": "./cards/4GSGSR.png",
         "isArchived": false
     },
@@ -226,7 +226,7 @@
         "idolname": "Gaeul",
         "series": "S01",
         "price": 1,
-        "name": "IVE Gaeul",
+        "name": "Gaeul",
         "image": "./cards/4GEPGE.png",
         "isArchived": false
     },
@@ -238,7 +238,7 @@
         "idolname": "Wonyoung",
         "series": "S01",
         "price": 1,
-        "name": "IVE Wonyoung",
+        "name": "Wonyoung",
         "image": "./cards/4GEPWY.png",
         "isArchived": false
     },
@@ -250,7 +250,7 @@
         "idolname": "Yujin",
         "series": "S01",
         "price": 1,
-        "name": "IVE Yujin",
+        "name": "Yujin",
         "image": "./cards/4GEPYJ.png",
         "isArchived": false
     },
@@ -262,7 +262,7 @@
         "idolname": "Miyeon",
         "series": "S01",
         "price": 1,
-        "name": "i-dle Miyeon",
+        "name": "Miyeon",
         "image": "./cards/4GISMY.png",
         "isArchived": false
     },
@@ -274,7 +274,7 @@
         "idolname": "Soyeon",
         "series": "S01",
         "price": 1,
-        "name": "i-dle Soyeon",
+        "name": "Soyeon",
         "image": "./cards/4GISSY.png",
         "isArchived": false
     },
@@ -286,45 +286,45 @@
         "idolname": "Yuqi",
         "series": "S01",
         "price": 1,
-        "name": "i-dle Yuqi",
+        "name": "Yuqi",
         "image": "./cards/4GISYQ.png",
         "isArchived": false
     },
     {
-        "code": "5GKGCH",
+        "code": "5GFHCH",
         "rarity": "5G",
         "group": "KEP1ER",
-        "era": "Grand Prix",
+        "era": "FLY-HIGH",
         "idolname": "Chaehyun",
         "series": "S01",
         "price": 1,
-        "name": "KEP1ER Chaehyun",
-        "image": "./cards/5GKGCH.png",
+        "name": "Chaehyun",
+        "image": "./cards/5GFHCH.png",
         "isArchived": false
     },
 
     {
-        "code": "5GKGDY",
+        "code": "5GFHYJ",
         "rarity": "5G",
         "group": "KEP1ER",
-        "era": "Grand Prix",
-        "idolname": "Dayeon",
+        "era": "FLY-HIGH",
+        "idolname": "Yujin",
         "series": "S01",
         "price": 1,
-        "name": "KEP1ER Dayeon",
-        "image": "./cards/5GKGDY.png",
+        "name": "Yujin",
+        "image": "./cards/5GFHYJ.png",
         "isArchived": false
     },
     {
-        "code": "5GKGXT",
+        "code": "5GFHXT",
         "rarity": "5G",
         "group": "KEP1ER",
-        "era": "Grand Prix",
+        "era": "FLY-HIGH",
         "idolname": "Xiaoting",
         "series": "S01",
         "price": 1,
-        "name": "KEP1ER Xiaoting",
-        "image": "./cards/5GKGXT.png",
+        "name": "Xiaoting",
+        "image": "./cards/5GFHXT.png",
         "isArchived": false
     },
     {
@@ -335,7 +335,7 @@
         "idolname": "Go Won",
         "series": "S01",
         "price": 1,
-        "name": "LOOSSEMBLE Go Won",
+        "name": "Go Won",
         "image": "./cards/5GOKGW.png",
         "isArchived": false
     },
@@ -347,7 +347,7 @@
         "idolname": "Olivia Hye",
         "series": "S01",
         "price": 1,
-        "name": "LOOSSEMBLE Olivia Hye",
+        "name": "Olivia Hye",
         "image": "./cards/5GOKOH.png",
         "isArchived": false
     },
@@ -359,7 +359,7 @@
         "idolname": "Yeojin",
         "series": "S01",
         "price": 1,
-        "name": "LOOSSEMBLE Yeojin",
+        "name": "Yeojin",
         "image": "./cards/5GOKYJ.png",
         "isArchived": false
     },
@@ -371,7 +371,7 @@
         "idolname": "Yena",
         "series": "S01",
         "price": 1,
-        "name": "SOLOIST Yena",
+        "name": "Yena",
         "image": "./cards/5GSPYN.png",
         "isArchived": false
     }

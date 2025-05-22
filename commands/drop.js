@@ -113,9 +113,9 @@ function sortByRarity(a, b) {
 
 function createCardButtons(cards) {
     const rarityEmotes = {
-        "3G": "<:3G:1358000209870717000>",
-        "4G": "<:4G:1358000213322629230>",
-        "5G": "<:5G:1358000216078417920>"
+        "3G": "<:3G:1359014247782289529>",
+        "4G": "<:4G:1359014234088018171>",
+        "5G": "<:5G:1359014171353682020>"
     };
 
     return cards.map(card => {

@@ -10,9 +10,9 @@ function cooldown(message) {
     const dropText = dropTime > 0
     ? `${Math.floor(dropTime / 60000)}m ${Math.floor((dropTime % 60000) / 1000)}s`
     : "Ready";
-    const clamTime = inventory.cooldown.claim - Date.now();
-    const clamText = clamTime > 0
-    ? `${Math.floor(clamTime / 30000)}m ${Math.floor((clamTime % 30000) / 1000)}s`
+    const claimTime = inventory.cooldown.claim - Date.now();
+    const claimText = claimTime > 0
+    ? `${Math.floor(claimTime / 60000)}m ${Math.floor((claimTime % 60000) / 1000)}s`
     : "Ready";
     const syncTime = inventory.cooldown.sync - Date.now();
     const syncText = syncTime > 0
@@ -29,7 +29,7 @@ function cooldown(message) {
         .setColor("#F37B4E")
         .addFields(
             { name: "", value: `**Drop:** ${dropText}`, inline: false },
-            { name: "", value: `**Claim:** ${clamText}`, inline: false },
+            { name: "", value: `**Claim:** ${claimText}`, inline: false },
             { name: "", value: `**Sync:** ${syncText}`, inline: false },
             { name: "", value: `**Login:** ${loginText}`, inline: false }
         )

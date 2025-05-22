@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-function add(message, userId, amount) {
+function resetCooldown(message, userId, type) {
     const hasAdminRole = message.member.roles.cache.some(role =>
         role.name === "head admin" || role.name === "system operator"
     );

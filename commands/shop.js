@@ -9,11 +9,13 @@ function shop(message) {
     shopData.forEach(item => {
         // embed.addFields({ name: '', value: `**${item.name}**: ${item.price} \`${item.code}\``, inline: false });
         const itemEmotes = {
-         "BYTE": "<:bytepack:1358092889904906400>",
-         "CORE": "<:corepack:1358092894224908298>",
-         "HYPER": "<:hyperpack:1358092898863808604>"
-          };
-        description += `${emote} \`${item.code}\` **${item.name}**: ${item.price}\`<credits:13579921504571269928> \n`;
+        "BYTE": "<:bytepack:1358092889904906400>",
+        "CORE": "<:corepack:1358092894224908298>",
+        "HYPER": "<:hyperpack:1358092898863808604>"
+        };
+
+        const emote = itemEmotes[item.code.toUpperCase()] || "";
+        description += `${emote} \`${item.code}\` **${item.name}**: ${item.price} <:credits:13579921504571269928>\n`;
 
     });
 

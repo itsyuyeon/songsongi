@@ -50,7 +50,9 @@ async function drop(message) {
             sentMessage.edit({
                 content: '**Drop expired!** No more cards can be claimed.',
                 components: []
-            }).catch(() => {});
+            }).catch((err) => {
+            console.error("Failed to remove buttons after expiration:", err);
+            });
         }, DROP_TIMEOUT);
 
     } catch (error) {
@@ -270,12 +272,18 @@ if (timeElapsed < 30000 && !isOriginalUser) {
     interaction.reply({ content: message, ephemeral: false });
     var userData = JSON.parse(fs.readFileSync(`./inventory/${interaction.user.id}.json`, 'utf8'));
     var c = userData.cards.find(card => card.code === code)
+    var userData = JSON.parse(fs.readFileSync(`./inventory/${interaction.user.id}.json`, 'utf8'));
+    var c = userData.cards.find(card => card.code === code);
     if (c === undefined) {
-        userData.cards.push({ code: code, count: 1 });
+    userData.cards.push({ code: code, count: 1 });
     } else {
-        c.count++;
+    c.count++;
     }
+
+    userData.lastClaimed = code; // ✅ <--- Add this line
+
     fs.writeFileSync(`./inventory/${interaction.user.id}.json`, JSON.stringify(userData, null, 2));
+
     lastClaimTimestamps.set(interaction.user.id, Date.now()); // 🔐 Set the cooldown
     // prevent the user from claiming the drop again
     dropInfo.bannedUsers.push(interaction.user.id);

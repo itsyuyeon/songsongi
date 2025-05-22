@@ -78,7 +78,13 @@ function removeShop(message, code) {
         return;
     }
     const shopData = JSON.parse(fs.readFileSync('./shop/shop.json', 'utf8'));
-    const index = shopData.findIndex(item => item.code === code);
+    const normalizedCode = code.toLowerCase();
+    const index = shopData.findIndex(item =>
+    Array.isArray(item.code)
+        ? item.code.map(c => c.toLowerCase()).includes(normalizedCode)
+        : item.code.toLowerCase() === normalizedCode
+        );
+
     if (index === -1) {
         message.channel.send('Item not found in shop!');
         return;

@@ -27,32 +27,28 @@ function resetCooldown(message, userId, type) {
         return;
     }
 
-    // ✅ Block self-reset unless the user is head admin
     if (userId === message.author.id && !isHeadAdmin) {
-        message.channel.send('Only head admins can reset their own cooldowns!');
+        message.channel.send('You cannot reset your own cooldown unless you are a head admin!');
         return;
     }
 
-    if (!fs.existsSync(`./inventory/${userId}.json`)) {
+    const filePath = `./inventory/${userId}.json`;
+    if (!fs.existsSync(filePath)) {
         message.channel.send('User not in database!');
         return;
     }
 
-    if (!receiverData.cooldown || !(type in receiverData.cooldown)) {
-    message.channel.send("Invalid or unset cooldown type!");
-    return;
-    }
+    const receiverData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-    const receiverData = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
-    if (receiverData.cooldown[type] === undefined) {
+    if (!receiverData.cooldown || receiverData.cooldown[type] === undefined) {
         message.channel.send("Invalid command!");
         return;
     }
 
     receiverData.cooldown[type] = Date.now();
-    fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(receiverData, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(receiverData, null, 2));
 
-    message.channel.send(`Cooldown reset for ${type} command for <@${userId}>!`);
+    message.channel.send(`Cooldown reset for \`${type}\` command for <@${userId}>!`);
 }
 
 module.exports = {

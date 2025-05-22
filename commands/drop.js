@@ -115,18 +115,20 @@ function sortByRarity(a, b) {
 
 function createCardButtons(cards) {
     const rarityEmotes = {
-        "3G": "<:3G:1358000209870717000>",
-        "4G": "<:4G:1358000213322629230>",
-        "5G": "<:5G:1358000216078417920>",
-        "PRISM": "<:gyuninigift:1365197464961024041>"
+        "3G": "1358000209870717000",
+        "4G": "1358000213322629230",
+        "5G": "1358000216078417920",
+        "PRISM": "1365197464961024041"
     };
 
     return cards.map(card => {
-        const emote = rarityEmotes[card.rarity] || "";
+        const emojiId = rarityEmotes[card.rarity];
+
         return new ButtonBuilder()
             .setCustomId(`pick_${card.code}`)
-            .setLabel(`${emote} ${card.code} ${card.name}`) // ✅ uses the emote here
-            .setStyle(ButtonStyle.Secondary);
+            .setLabel(`${card.code} ${card.name}`)
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(emojiId ? { id: emojiId } : undefined);
     });
 }
 

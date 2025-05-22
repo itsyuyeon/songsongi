@@ -3,6 +3,7 @@
     "name": "Byte Pack",
     "description": "5 cards ranging from 3G - 5G",
     "price": 1500,
+    "type": "byte",
     "code": ["BYTE", "byte", "byte pack"],
     "cards": 5,
     "rarity": {
@@ -17,6 +18,7 @@
     "name": "Core Pack",
     "description": "10 cards ranging from 3G - 5G",
     "price": 3000,
+    "type": "core",
     "code": ["CORE", "core", "core pack"],
     "cards": 10,
     "rarity": {
@@ -31,6 +33,7 @@
     "name": "Hyper Pack",
     "description": "15 cards ranging from 3G to 5G rarities",
     "price": 5000,
+    "type": "hyper",
     "codes": ["HYPER", "hyper", "hyper pack"],
     "cards": 20,
     "rarity": {

@@ -40,3 +40,16 @@ function sub(message, userId, amount) {
     amount = Math.abs(parseInt(amount));
     if (isNaN(amount) || amount <= 0) {
         message.channel.send(`You cannot subtract ${amount} credits!`);
+        return;
+    }
+
+    const receiverData = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
+    receiverData.wallet = Math.max(0, receiverData.wallet - amount); // prevent negative wallet
+    fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(receiverData, null, 2));
+
+    message.channel.send(`Removed ${amount} credits from <@${userId}>'s wallet!`);
+}
+
+module.exports = {
+    sub
+};

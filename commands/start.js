@@ -17,8 +17,8 @@ function start(message) {
         fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify({
             id: message.author.id,
             cards: [],
-            syncbank: 2000,
-            wallet: 0,
+            syncbank: 0,
+            wallet: 2000,
             cardpacks: [],
             profile: {
                 username: message.author.username,

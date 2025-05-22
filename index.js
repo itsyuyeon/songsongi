@@ -39,10 +39,9 @@ client.on('messageCreate', async (message) => {
     
     if (message.author.bot) return;
 
-    // ✅ Early global allowed channel check
-    if (!isAllowedChannel(message.channel.id)) {
-        console.log("⛔ Message blocked (not in allowed channel)");
-        return;
+     if (!isAllowedChannel(message.channel.id)) {
+    console.log(`❌ Blocked command in ${message.channel.id}`);
+    return;
     }
 
     if (!message.content.startsWith(config.prefix)) return; { // Check if the message starts with the prefix

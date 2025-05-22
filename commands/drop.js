@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 const { createCanvas, loadImage } = require('canvas');
+const lastClaimTimestamps = new Map();
 
 const activeDrops = new Map(); // stores drop info: {userId, timestamp}
 
@@ -163,6 +164,16 @@ async function handleButtonInteraction(interaction) {
         return;
     }
 
+       const lastClaim = lastClaimTimestamps.get(interaction.user.id);
+    if (lastClaim && Date.now() - lastClaim < 5 * 60 * 1000) { // 5 minutes
+    const remaining = Math.ceil((5 * 60 * 1000 - (Date.now() - lastClaim)) / 1000);
+    await interaction.reply({
+        content: `You must wait **${remaining} seconds** before claiming another card.`,
+        ephemeral: true
+    });
+    return;
+    }   
+
     if (dropInfo.bannedUsers.includes(interaction.user.id)) {
         interaction.reply({ content: 'You have already claimed this drop!', ephemeral: true });
         return;
@@ -255,9 +266,11 @@ if (timeElapsed < 30000 && !isOriginalUser) {
         c.count++;
     }
     fs.writeFileSync(`./inventory/${interaction.user.id}.json`, JSON.stringify(userData, null, 2));
+    lastClaimTimestamps.set(interaction.user.id, Date.now()); // 🔐 Set the cooldown
     // prevent the user from claiming the drop again
     dropInfo.bannedUsers.push(interaction.user.id);
     activeDrops.set(interaction.user.id, dropInfo);
+
 }
 
 async function paidDrop(message) {

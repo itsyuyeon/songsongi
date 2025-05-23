@@ -86,14 +86,6 @@ function getRandomCardWithWeights(metadata, weights) {
     return metadata[Math.floor(Math.random() * metadata.length)];
 }
 
-async function drop(message) {
-    message.reply("hold on... error 404");
-}
-
-async function handleButtonInteraction(interaction) {
-    interaction.reply({ content: "got it, get help!", ephemeral: true });
-}
-
 module.exports = {
     drop,
     handleButtonInteraction,

@@ -44,4 +44,4 @@ async function buy(intermsg, cardpack, amount = 1) {
     intermsg.reply(`✅ You bought \`${amount}\` ${item.name} for \`${totalCost}\` credits!`);
 }
 
-module.exports = { buy };
+export{ buy };

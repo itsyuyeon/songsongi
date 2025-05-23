@@ -105,6 +105,6 @@ function sell(message, userId, code, amount) {
     message.channel.send(`You have successfully sold ${amount}x ${code} cards to <@${userId}>! You have received ${credits*amount} credits!`);
 }
 
-module.exports = {
+export{
     sell,
 };

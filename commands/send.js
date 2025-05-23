@@ -31,6 +31,6 @@ function send(message, userId, content) {
     }
 }
 
-module.exports = {
+export{
     send,
 };

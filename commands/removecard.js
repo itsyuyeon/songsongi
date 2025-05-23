@@ -62,6 +62,6 @@ function removeCard(message, userId, code, amount) {
     message.channel.send(`Removed ${amount}x of card ${code} from <@${userId}>!`);
 }
 
-module.exports = {
+export{
     removeCard
 };

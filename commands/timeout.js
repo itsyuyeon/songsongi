@@ -53,7 +53,7 @@ function timeoutMessage(message) {
     });
 }
 
-module.exports = {
+export{
     timeout,
     removeTimeout,
     isTimeout,

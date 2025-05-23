@@ -23,6 +23,6 @@ Thank you for boosting!
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
 }
 
-module.exports = {
+export{
     boost,
 };

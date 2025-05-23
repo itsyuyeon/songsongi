@@ -70,6 +70,6 @@ async function view(message, arg) {
     message.reply({ embeds: [embed], files: [cardImage] });
 }
 
-module.exports = {
+export{
     view
 };

@@ -156,7 +156,7 @@ function editCardCode(message, oldCode, newCode) {
     }
 }
 
-module.exports = {
+export{
     uploadCard,
     deleteCard,
     editCardCode,

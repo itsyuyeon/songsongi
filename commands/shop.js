@@ -39,6 +39,6 @@ function shop(message) {
     message.reply({ embeds: [embed], components: [buttonRow] });
 }
 
-module.exports = {
+export{
     shop
 };

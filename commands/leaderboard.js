@@ -82,4 +82,4 @@ async function leaderboard(message, rawArgs) {
     message.reply({ embeds: [embed] });
 }
 
-module.exports = { leaderboard };
+export{ leaderboard };

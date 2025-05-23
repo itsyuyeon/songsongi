@@ -81,6 +81,6 @@ function gift(message, args) {
     }
 }
 
-module.exports = {
+export{
     gift,
 };

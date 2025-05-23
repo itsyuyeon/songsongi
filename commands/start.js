@@ -60,7 +60,7 @@ function notStartedMessage(message) {
     });
 }
 
-module.exports = {
+export{
     start,
     hasStarted,
     notStartedMessage

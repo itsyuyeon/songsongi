@@ -103,7 +103,7 @@ function hoardRemove(message, code) {
     message.channel.send(`Removed ${code} from your hoard!`);
 }
 
-module.exports = {
+export{
     hoardList,
     hoardSet,
     hoardAdd,

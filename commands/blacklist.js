@@ -72,7 +72,7 @@ function unblacklist(message, userId) {
     return message.channel.send(`User <@${userId}> has been unblacklisted.`);
 }
 
-module.exports = {
+export{
     blacklist,
     unblacklist,
     isBlacklisted,

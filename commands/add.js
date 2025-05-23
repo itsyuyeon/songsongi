@@ -50,6 +50,6 @@ function add(message, userId, amount) {
     message.channel.send(`Added ${amount} credits to <@${userId}>'s wallet!`` <:credits:1357992150457126992>`);
 }
 
-module.exports = {
+export{
     add
 };

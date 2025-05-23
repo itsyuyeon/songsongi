@@ -59,6 +59,6 @@ function giveCard(message, userId, code, amount) {
     message.channel.send(`Gave ${amount}x of card ${code} to <@${userId}>!`);
 }
 
-module.exports = {
+export{
     giveCard
 };

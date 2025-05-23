@@ -4,22 +4,13 @@ const { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBu
 
 const db = require('../db');
 
-async function drop(message) {
-    const userId = message.author.id;
-
-    const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-    if (result.rows.length === 0) {
-        console.error('User not found in the database');
-        return message.reply('You are currently not in the database.');
-    }}
-
-
 // Store active drops and last claim timestamps
 const activeDrops = new Map();
 const lastClaimTimestamps = new Map();
 
 async function drop(message) {
     const userId = message.author.id;
+
     const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8')).filter(c => !c.archived);
 
     if (metadata.length < 3) return message.reply('Not enough cards available for a drop.');
@@ -270,7 +261,7 @@ function getRandomCardWithWeights(metadata, weights) {
     return metadata[Math.floor(Math.random() * metadata.length)];
 }
 
-module.exports = {
+export {
     drop,
     handleButtonInteraction,
     paidDrop

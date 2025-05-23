@@ -100,6 +100,6 @@ async function login(message) {
     await message.reply({ embeds: [embed] });
 }
 
-module.exports = {
+export{
     login,
 };

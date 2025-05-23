@@ -54,6 +54,6 @@ function resetCooldown(message, userId, type) {
     message.channel.send(`Cooldown reset for \`${type}\` command for <@${userId}>!`);
 }
 
-module.exports = {
+export{
     resetCooldown
 };

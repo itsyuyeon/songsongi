@@ -72,7 +72,7 @@ async function reminderLoop(client) {
     }
 }
 
-module.exports = {
+export{
     reminder,
     setReminder,
     reminderLoop

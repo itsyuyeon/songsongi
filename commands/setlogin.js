@@ -44,6 +44,6 @@ function setLogin(message, userId, amount) {
     message.channel.send(`Login streak for <@${userId}> is set to ${amount}!`);
 }
 
-module.exports = {
+export{
     setLogin
 }

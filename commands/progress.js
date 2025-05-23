@@ -98,6 +98,6 @@ async function progress(message, group) {
     });
 }
 
-module.exports = {
+export{
     progress
 };

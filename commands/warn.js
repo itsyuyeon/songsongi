@@ -49,6 +49,6 @@ function warn(message, userId) {
     fs.writeFileSync('./moderation/moderation.json', JSON.stringify(moderation, null, 2));
 }
 
-module.exports = {
+export{
     warn,
 };

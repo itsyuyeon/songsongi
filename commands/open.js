@@ -95,6 +95,6 @@ function sortByRarity(a, b) {
     return b.rarity - a.rarity;
 }
 
-module.exports = {
+export{
     open,
 };

@@ -146,7 +146,7 @@ function handleFilterSelection(interaction) {
   interaction.update({ embeds: [embed], components: [row, select] });
 }
 
-module.exports = {
+export{
   inventory,
   handleInventoryInteraction,
   handleFilterSelection,

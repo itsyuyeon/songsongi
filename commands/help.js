@@ -45,6 +45,6 @@ function help(message) {
     message.reply({ embeds: [embed] });
 }
 
-module.exports = {
+export{
     help
 };

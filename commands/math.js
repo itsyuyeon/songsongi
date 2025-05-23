@@ -25,6 +25,6 @@ async function math(message, equation) {
     }
 }
 
-module.exports = {
+export{
     math,
 };

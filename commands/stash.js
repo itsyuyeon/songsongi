@@ -35,6 +35,6 @@ function stash(message) {
     message.reply({ embeds: [embed] });
 }
 
-module.exports = {
+export{
     stash,
 };

@@ -42,6 +42,6 @@ function pay(message, userId, amount) {
     }
 }
 
-module.exports = {
+export{
     pay
 };

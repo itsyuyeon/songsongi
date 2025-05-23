@@ -25,6 +25,6 @@ function del(message, userId) {
     message.reply(`User with ID ${userId} has been deleted.`);
 }
 
-module.exports = {
+export{
     del
 };

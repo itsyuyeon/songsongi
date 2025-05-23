@@ -201,7 +201,7 @@ async function getCachedOrNewImage(userId, inventory, cachePath, avatarURL) {
 
 
 
-module.exports = {
+export{
     profile,
     bio,
     profileCard,

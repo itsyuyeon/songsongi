@@ -23,6 +23,6 @@ async function withdraw(message, amount) {
     message.channel.send(`You have withdrew ${amount} credits! Your Syncbank's new balance is ${userData.syncbank} credits.`);
 }
 
-module.exports = {
+export{
     withdraw
 };

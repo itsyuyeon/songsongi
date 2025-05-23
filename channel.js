@@ -41,7 +41,7 @@ function inCorrectChannel(message, command) {
   return isAllowedChannel(channelID);
 }
 
-module.exports = {
+export{
   isAllowedChannel,
   inCorrectChannel
 };

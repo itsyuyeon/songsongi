@@ -30,7 +30,7 @@ async function unarchive(message, series) {
   message.channel.send(`Series "${series}" has been unarchived.`);
 }
 
-module.exports = {
+export{
   viewArchive,
   archive,
   unarchive

@@ -50,6 +50,6 @@ async function balance(message, arg) {
     message.channel.send({ embeds: [embed] });
 }
 
-module.exports = {
+export{
     balance
 };

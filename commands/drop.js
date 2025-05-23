@@ -4,12 +4,15 @@ const { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBu
 
 const db = require('../db');
 
-const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-if (result.rows.length === 0) {
-    // User not found, handle accordingly
-    console.error('User not found in the database');
-    return;
-}
+async function drop(message) {
+    const userId = message.author.id;
+
+    const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+    if (result.rows.length === 0) {
+        console.error('User not found in the database');
+        return message.reply('You are currently not in the database.');
+    }}
+
 
 // Store active drops and last claim timestamps
 const activeDrops = new Map();

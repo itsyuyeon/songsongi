@@ -1,4 +1,4 @@
-const config = require('./config.json');
+import config from './config.json' assert { type: 'json' };
 
 require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
@@ -322,8 +322,8 @@ client.on('messageCreate', async (message) => {
                 let amount = cmdArgs.shift();
                 let rarities = cmdArgs.join(' ');
 
-    cmd.addShop(message, name, description, price, code, amount, rarities);
-    break;
+                cmd.addShop(message, name, description, price, code, amount, rarities);
+            break;
 
 
             case 'rshop':

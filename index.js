@@ -7,7 +7,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import fs from 'fs';
 
 // ✅ Move this up before using any `cmd`
-const cmd = require('./commands.js');
+import cmd from './commands.js';
 const { inCorrectChannel, isAllowedChannel} = require('./channel.js');
 
 const client = new Client({

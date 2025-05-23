@@ -10,18 +10,28 @@ function cooldown(message) {
     const dropText = dropTime > 0
     ? `${Math.floor(dropTime / 60000)}m ${Math.floor((dropTime % 60000) / 1000)}s`
     : "Ready";
+
     const claimTime = inventory.cooldown.claim - Date.now();
     const claimText = claimTime > 0
     ? `${Math.floor(claimTime / 60000)}m ${Math.floor((claimTime % 60000) / 1000)}s`
     : "Ready";
+
+    const paidDropTime = inventory.cooldown.paidDrop - Date.now();
+    const paidDropText = paidDropTime > 0
+    ? `${Math.floor(paidDropTime / 60000)}m ${Math.floor((paidDropTime % 60000) / 1000)}s`
+    : "Ready";
+
     const syncTime = inventory.cooldown.sync - Date.now();
     const syncText = syncTime > 0
      ? `${Math.floor(syncTime / 60000)}m ${Math.floor((syncTime % 60000) / 1000)}s`
      : "Ready";
+
     const loginTime = inventory.cooldown.login - Date.now();
     const loginText = loginTime > 0
     ? `${Math.floor(loginTime / 3600000)}h ${Math.floor((loginTime % 3600000) / 60000)}m`
     : "Ready";
+
+
     // const loginSec = loginTime % 60;
     
     const embed = new EmbedBuilder()
@@ -30,6 +40,7 @@ function cooldown(message) {
         .addFields(
             { name: "", value: `**Drop:** ${dropText}`, inline: false },
             { name: "", value: `**Claim:** ${claimText}`, inline: false },
+            { name: "", value: `**Paid Drop:** ${paidDropText}`, inline: false },
             { name: "", value: `**Sync:** ${syncText}`, inline: false },
             { name: "", value: `**Login:** ${loginText}`, inline: false }
         )

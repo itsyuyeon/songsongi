@@ -16,7 +16,7 @@ function checkin(message) {
         .setDescription(
 `1000 credits have been rewarded.
 
--# You currently have ${userData.wallet} credits in your wallet.`
+-# You currently have ${userData.wallet} credits <:credits:1357992150457126992> in your wallet.`
         )
     message.reply({ embeds: [embed] });
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));

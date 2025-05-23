@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 function warn(message, userId) {
-    if (!message.member.roles.cache.some(role => role.name === "head admin")) {
-        message.reply('Only head admins can use this command!');
+    if (!message.member.roles.cache.some(role => role.name === "head admin" || role.name === "investigator")) {
+        message.reply('You are not allowed to use this!');
         return;
     }
     // Check if the user is a bot

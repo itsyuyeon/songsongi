@@ -38,7 +38,7 @@ function buy(intermsg, cardpack, amount) {
         fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(userData, null, 2));
         intermsg.reply(`You bought ${amount} ${item.name} for ${item.price*amount} credits!`);
     } else {
-        intermsg.reply(`You do not have enough credits! Need ${(item.price*amount)-userData.wallet} more.`);
+        intermsg.reply(`You do not have enough credits <:credits:1357992150457126992>! Need ${(item.price*amount)-userData.wallet} more.`);
     }
 }
 

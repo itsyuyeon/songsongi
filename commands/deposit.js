@@ -20,7 +20,7 @@ async function deposit(message, amount) {
     userData.syncbank += amount;
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
 
-    message.channel.send(`You have deposited ${amount} credits! Your syncbank's new balance is ${userData.syncbank} credits.`);
+    message.channel.send(`You have deposited ${amount} credits <:credits:1357992150457126992>! Your syncbank's new balance is ${userData.syncbank} credits <:credits:1357992150457126992>.`);
 }
 
 module.exports = {

@@ -36,12 +36,20 @@ async function balance(message, arg) {
     }
 
     const embed = new EmbedBuilder()
-        .setColor("#F9768C")
-        .setTitle(`${targetUser.username}'s Balance`)
-        .addFields(
-            { name: "Syncbank:", value: `${userData.syncbank}`, inline: true },
-            { name: "Wallet:", value: `${userData.wallet}`, inline: true }
-        );
+    .setColor("#F9768C")
+    .setTitle(`${targetUser.username}'s Balance`)
+    .addFields(
+        {
+            name: "Wallet:",
+            value: `\`${userData.wallet.toLocaleString()}\` <:credits:1357992150457126992>`,
+            inline: true
+        },
+        {
+            name: "Syncbank:",
+            value: `\`${userData.syncbank.toLocaleString()}\` <:credits:1357992150457126992>`,
+            inline: true
+        }
+    );
 
     message.channel.send({ embeds: [embed] });
 }

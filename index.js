@@ -87,7 +87,7 @@ client.on('messageCreate', async (message) => {
             case 'inventory':
             case 'INV':
             case 'I':
-                cmd.balance(message, args[0]); // Pass mention or ID if any 
+                cmd.inventory(message, args[0]); // Pass mention or ID if any 
 
             case 'shop':
             case 'Shop':
@@ -180,13 +180,13 @@ client.on('messageCreate', async (message) => {
 
             case 'pd':
                 if (!inCorrectChannel(message, 'pd')) return;
-                if (cmd.isCooldown(message.author.id, 'drop')) {
-                    return cmd.cooldownMessage(message, 'drop');
+                if (cmd.isCooldown(message.author.id, 'paidDrop')) {
+                    return cmd.cooldownMessage(message, 'paidDrop');
                 } else {
-                    cmd.setCooldown(message.author.id, 'drop', 0.5);
+                    cmd.setCooldown(message.author.id, 'paidDrop', 0.5);
                 }
                 cmd.paidDrop(message);
-                cmd.setReminder(message.author.id, 'drop', 0.5);
+                cmd.setReminder(message.author.id, 'paidDrop', 0.5);
                 break;
 
             case 'reminder':
@@ -204,7 +204,8 @@ client.on('messageCreate', async (message) => {
 
             case 'balance':
             case 'bal':
-                cmd.balance(message, args[0]); // Pass mention or ID if any                
+                cmd.balance(message, args[0]); // Pass mention or ID if any   
+                break;             
 
             case 'deposit':
                 if (!inCorrectChannel(message, 'deposit')) return;

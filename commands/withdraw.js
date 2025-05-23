@@ -20,7 +20,7 @@ async function withdraw(message, amount) {
     userData.wallet += amount;
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
 
-    message.channel.send(`You have withdrew ${amount} credits! Your wallet's new balance is ${userData.syncbank} credits.`);
+    message.channel.send(`You have withdrew ${amount} credits! Your Syncbank's new balance is ${userData.syncbank} credits.`);
 }
 
 module.exports = {

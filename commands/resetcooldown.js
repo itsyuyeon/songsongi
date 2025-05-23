@@ -45,8 +45,11 @@ function resetCooldown(message, userId, type) {
         return;
     }
 
-    receiverData.cooldown[type] = Date.now();
-    fs.writeFileSync(filePath, JSON.stringify(receiverData, null, 2));
+    receiverData.cooldown[type] = 0; // or delete receiverData.cooldown[type];
+    if (receiverData.reminders && receiverData.reminders[type]) {
+    delete receiverData.reminders[type];
+    }
+    fs.writeFileSync(filePath, JSON.stringify(receiverData, null, 2));;
 
     message.channel.send(`Cooldown reset for \`${type}\` command for <@${userId}>!`);
 }

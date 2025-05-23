@@ -17,7 +17,7 @@ function boost(message) {
 `2000 credits synced to your account.
 Thank you for boosting!
 
--# You currently have ${userData.wallet} credits in your wallet.`
+-# You currently have ${userData.wallet} credits <:credits:1357992150457126992> in your wallet.`
         )
     message.reply({ embeds: [embed] });
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));

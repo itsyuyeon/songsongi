@@ -1,130 +1,143 @@
+// inventory.js
 const fs = require('fs');
-const { EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder } = require('discord.js');
+const {
+  EmbedBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require('discord.js');
 
-function inventory(message, filter) {
-    let targetUser = message.mentions.users.first();
-    let targetId;
+const activeInventories = new Map();
 
-    // Check for mention or user ID
-    if (targetUser) {
-        targetId = targetUser.id;
-    } else if (filter && /^\d{17,20}$/.test(filter)) {
-        targetId = filter;
-    } else {
-        targetUser = message.author;
-        targetId = targetUser.id;
-    }
-
-    if (!fs.existsSync(`./inventory/${targetId}.json`)) {
-        return message.reply(`<@${targetId}> has no inventory.`);
-    }
-
-    const userData = JSON.parse(fs.readFileSync(`./inventory/${targetId}.json`, 'utf8'));
-    const metadata = JSON.parse(fs.readFileSync(`./cards/metadata.json`, 'utf8'));
-
-    const embed = new EmbedBuilder()
-        .setTitle(`${targetUser ? targetUser.username : 'User'}'s Inventory`)
-        .setColor('#52A5FF');
-
-    if (!filter || /^\d{17,20}$/.test(filter)) {
-        let SIGNAL = 0, LTE = 0, PRISM = 0;
-        userData.cards.forEach(card => {
-            const cardData = metadata.find(c => c.code === card.code);
-            if (!cardData) return;
-            if (["3G", "4G", "5G"].includes(cardData.rarity)) SIGNAL += card.count;
-            else if (cardData.rarity === "LTE") LTE += card.count;
-            else if (cardData.rarity === "PRISM") PRISM += card.count;
-        });
-
-        embed.addFields({
-            name: 'Summary',
-            value: `**SIGNAL** - \`${SIGNAL}\`\n**LTE** - \`${LTE}\`\n**PRISM** - \`${PRISM}\``,
-            inline: true
-        });
-    } else {
-        const key = filter.split('=')[1];
-        let groupedCards = new Map();
-
-        userData.cards.forEach(card => {
-            const cardData = metadata.find(c => c.code === card.code);
-            if (!cardData) return;
-            let include = false;
-            switch (filter[0]) {
-                case 'g': include = cardData.group?.toLowerCase().includes(key.toLowerCase()); break;
-                case 'n': include = cardData.name?.toLowerCase().includes(key.toLowerCase()); break;
-                case 'r': include = cardData.rarity?.toLowerCase() === key.toLowerCase(); break;
-            }
-            if (include) {
-                const groupKey = `${cardData.group} - ${cardData.era}`;
-                const display = `${cardData.code} ${cardData.name} - \`${card.count}\``;
-                if (!groupedCards.has(groupKey)) groupedCards.set(groupKey, []);
-                groupedCards.get(groupKey).push(display);
-            }
-        });
-
-        for (let [group, cards] of groupedCards) {
-            embed.addFields({ name: `**${group}**`, value: cards.join('\n'), inline: false });
-        }
-    }
-
-    const select = new StringSelectMenuBuilder()
-        .setCustomId('filter')
-        .setPlaceholder('Rarity Filter')
-        .addOptions(
-            new StringSelectMenuOptionBuilder().setLabel('SIGNAL CARDS').setValue('SIGNAL'),
-            new StringSelectMenuOptionBuilder().setLabel('LTE CARDS').setValue('LTE'),
-            new StringSelectMenuOptionBuilder().setLabel('PRISM CARDS').setValue('PRISM')
-        );
-
-    const row = new ActionRowBuilder().addComponents(select);
-    message.reply({ embeds: [embed], components: [row] });
+function paginate(array, pageSize) {
+  return array.reduce((acc, val, i) => {
+    const pageIndex = Math.floor(i / pageSize);
+    acc[pageIndex] = [...(acc[pageIndex] || []), val];
+    return acc;
+  }, []);
 }
 
-function filter(interaction) {
-    const rarity = interaction.values[0];
-    const userId = interaction.user.id;
-    const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'));
-    const userData = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
+function inventory(message) {
+  const targetUser = message.mentions.users.first() || message.author;
+  const targetId = targetUser.id;
+  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'));
+  const userData = JSON.parse(fs.readFileSync(`./inventory/${targetId}.json`, 'utf8'));
 
-    const embed = new EmbedBuilder()
-        .setTitle(`${interaction.user.username}'s Inventory`)
-        .setColor('#52A5FF');
+  const ownedCodes = new Set(userData.cards.map(c => c.code));
+  const cards = metadata.filter(c => ownedCodes.has(c.code));
+  const pages = paginate(cards, 25);
 
-    let groupedCards = new Map();
-    userData.cards.forEach(card => {
-        const cardData = metadata.find(c => c.code === card.code);
-        if (!cardData) return;
+  const state = {
+    userId: targetId,
+    cards,
+    currentPage: 0,
+    totalPages: pages.length,
+    filterType: 'ALL'
+  };
+  activeInventories.set(message.id, state);
 
-        const isMatch =
-            (rarity === 'SIGNAL' && ['3G', '4G', '5G'].includes(cardData.rarity)) ||
-            (cardData.rarity === rarity);
+  const embed = generateEmbed(targetUser, pages[0], 1, pages.length);
+  const row = generateButtons();
+  const select = generateDropdown();
 
-        if (isMatch) {
-            const groupKey = `${cardData.group} - ${cardData.era}`;
-            const display = `${cardData.code} ${cardData.name} - \`${card.count}\``;
-            if (!groupedCards.has(groupKey)) groupedCards.set(groupKey, []);
-            groupedCards.get(groupKey).push(display);
-        }
-    });
+  message.reply({ embeds: [embed], components: [row, select] });
+}
 
-    for (let [group, cards] of groupedCards) {
-        embed.addFields({ name: `**${group}**`, value: cards.join('\n'), inline: false });
-    }
+function generateEmbed(user, cards, currentPage, totalPages) {
+  const embed = new EmbedBuilder()
+    .setTitle(`${user.username}'s Inventory`)
+    .setColor('#52A5FF')
+    .setFooter({ text: `Page ${currentPage} of ${totalPages}` });
 
-    const select = new StringSelectMenuBuilder()
-        .setCustomId('filter')
-        .setPlaceholder('Rarity Filter')
-        .addOptions(
-            new StringSelectMenuOptionBuilder().setLabel('SIGNAL CARDS').setValue('SIGNAL'),
-            new StringSelectMenuOptionBuilder().setLabel('LTE CARDS').setValue('LTE'),
-            new StringSelectMenuOptionBuilder().setLabel('PRISM CARDS').setValue('PRISM')
-        );
+  cards.forEach(card => {
+    embed.addFields({ name: `${card.code}`, value: `${card.name} — ${card.group} (${card.rarity})`, inline: false });
+  });
 
-    const row = new ActionRowBuilder().addComponents(select);
-    interaction.update({ embeds: [embed], components: [row] });
+  return embed;
+}
+
+function generateButtons() {
+  return new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setCustomId('first_page').setLabel('⏪').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('prev_page').setLabel('◀️').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('export_codes').setLabel('🔽 Export').setStyle(ButtonStyle.Primary),
+    new ButtonBuilder().setCustomId('next_page').setLabel('▶️').setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder().setCustomId('last_page').setLabel('⏩').setStyle(ButtonStyle.Secondary)
+  );
+}
+
+function generateDropdown() {
+  return new ActionRowBuilder().addComponents(
+    new StringSelectMenuBuilder()
+      .setCustomId('filter_inv')
+      .setPlaceholder('Filter by Rarity')
+      .addOptions(
+        new StringSelectMenuOptionBuilder().setLabel('All').setValue('ALL'),
+        new StringSelectMenuOptionBuilder().setLabel('3G').setValue('3G'),
+        new StringSelectMenuOptionBuilder().setLabel('4G').setValue('4G'),
+        new StringSelectMenuOptionBuilder().setLabel('5G').setValue('5G'),
+        new StringSelectMenuOptionBuilder().setLabel('LTE').setValue('LTE'),
+        new StringSelectMenuOptionBuilder().setLabel('PRISM').setValue('PRISM')
+      )
+  );
+}
+
+function handleInventoryInteraction(interaction) {
+  const state = activeInventories.get(interaction.message.id);
+  if (!state || interaction.user.id !== state.userId) return interaction.reply({ content: 'This is not your inventory view.', ephemeral: true });
+
+  if (interaction.customId === 'export_codes') {
+    const text = state.cards.map(c => c.code).join('\n');
+    const filePath = `./temp/inventory_${state.userId}.txt`;
+    fs.writeFileSync(filePath, text);
+    return interaction.reply({ content: 'Exported card codes:', files: [filePath], ephemeral: true });
+  }
+
+  const totalPages = Math.ceil(state.cards.length / 25);
+
+  if (interaction.customId === 'first_page') state.currentPage = 0;
+  if (interaction.customId === 'prev_page') state.currentPage = Math.max(0, state.currentPage - 1);
+  if (interaction.customId === 'next_page') state.currentPage = Math.min(totalPages - 1, state.currentPage + 1);
+  if (interaction.customId === 'last_page') state.currentPage = totalPages - 1;
+
+  const currentCards = paginate(state.cards, 25)[state.currentPage];
+  const embed = generateEmbed(interaction.user, currentCards, state.currentPage + 1, totalPages);
+  const row = generateButtons();
+  const select = generateDropdown();
+
+  interaction.update({ embeds: [embed], components: [row, select] });
+}
+
+function handleFilterSelection(interaction) {
+  const state = activeInventories.get(interaction.message.id);
+  if (!state || interaction.user.id !== state.userId) return;
+
+  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'));
+  const userData = JSON.parse(fs.readFileSync(`./inventory/${state.userId}.json`, 'utf8'));
+  const ownedCodes = new Set(userData.cards.map(c => c.code));
+
+  const filter = interaction.values[0];
+  const filtered = metadata.filter(c => {
+    const owns = ownedCodes.has(c.code);
+    return owns && (filter === 'ALL' || c.rarity === filter);
+  });
+
+  state.cards = filtered;
+  state.currentPage = 0;
+  state.totalPages = Math.ceil(filtered.length / 25);
+  const currentCards = paginate(state.cards, 25)[0];
+
+  const embed = generateEmbed(interaction.user, currentCards, 1, state.totalPages);
+  const row = generateButtons();
+  const select = generateDropdown();
+
+  interaction.update({ embeds: [embed], components: [row, select] });
 }
 
 module.exports = {
-    inventory,
-    filter
+  inventory,
+  handleInventoryInteraction,
+  handleFilterSelection,
 };

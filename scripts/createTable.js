@@ -35,15 +35,6 @@ import pool from '../db.js'; //
         is_archived BOOLEAN DEFAULT FALSE
       );
 
-      CREATE TABLE users (
-        id TEXT PRIMARY KEY,
-       username TEXT,
-       wallet INTEGER,
-       syncbank INTEGER,
-       cardpacks JSONB,
-        cards JSONB
-      );
-
 
     `);
 

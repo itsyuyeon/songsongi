@@ -349,8 +349,20 @@ client.on('messageCreate', async (message) => {
                 }
                 cmd.drop(message);
                 cmd.setReminder(message.author.id, 'boosterDrop', 5);
+
         }
     }
+});
+
+const pool = require('./db');
+
+// Example usage
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('❌ Database connection failed:', err);
+  } else {
+    console.log('✅ Connected to DB at:', res.rows[0].now);
+  }
 });
 
 client.on('interactionCreate', async interaction => {

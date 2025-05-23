@@ -25,8 +25,33 @@ async function drop(message) {
         )
     );
 
+    async function getCachedOrNewImage(cards, cachePath) {
+    if (fs.existsSync(cachePath)) {
+        console.log("Using cached image!");
+        return new AttachmentBuilder(cachePath);
+    }
+
+    // const canvas = createCanvas(6500, 3000);
+    const canvas = createCanvas(2300, 1000);
+    const ctx = canvas.getContext('2d');
+
+    // Load and draw images side by side
+    for (let i = 0; i < cards.length; i++) {
+        const img = await loadImage(./cards/${cards[i].code}.png);
+        // ctx.drawImage(img, i * 300, 0, 300, 400);
+        
+        var width = Math.round(img.width*0.50);
+        var height = Math.round(img.height*0.50);
+        ctx.drawImage(img, (i * 1000) - (266 * i), 0, width, height);
+    }
+
+    const buffer = canvas.toBuffer('image/png');
+    fs.writeFileSync(cachePath, buffer);
+    return new AttachmentBuilder(cachePath);
+}
+
     const embed = new EmbedBuilder()
-        .setTitle('🔍 Scanning complete')
+        .setTitle('Scanning complete')
         .setDescription(`@${message.author.username}, choose your connection!`)
         .setImage(`attachment://${selectedCards[0].code}.png`)
         .setColor('#52A5FF');
@@ -104,6 +129,25 @@ async function handleButtonInteraction(interaction) {
         const waitTime = Math.ceil((30000 - timeElapsed) / 1000);
         return interaction.reply({ content: `Wait ${waitTime} seconds before claiming from someone else's drop!`, ephemeral: true });
     }
+
+    function createCardButtons(cards) {
+    const rarityEmotes = {
+        "3G": "1358000209870717000",
+        "4G": "1358000213322629230",
+        "5G": "1358000216078417920",
+        "PRISM": "1365197464961024041"
+    };
+
+    return cards.map(card => {
+        const emojiId = rarityEmotes[card.rarity];
+
+        return new ButtonBuilder()
+            .setCustomId(pick_${card.code})
+            .setLabel(${card.code} ${card.name})
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(emojiId ? { id: emojiId } : undefined);
+    });
+}
 
     const code = interaction.customId.split('_')[1];
     const cardMeta = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8')).find(c => c.code === code);

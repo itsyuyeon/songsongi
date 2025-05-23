@@ -53,7 +53,7 @@ async function drop(message) {
     const embed = new EmbedBuilder()
         .setTitle('Scanning complete')
         .setDescription(`@${message.author.username}, choose your connection!`)
-        .setImage(`attachment://${selectedCards[0].code}.png`)
+        .setImage(`attachment:/${selectedCards[0].code}.png`)
         .setColor('#52A5FF');
 
     const reply = await message.reply({ embeds: [embed], files: [attachment], components: [buttons] });
@@ -227,9 +227,10 @@ async function paidDrop(message) {
         .setColor(colour)
         .setTitle('Paid Card Dropped!')
         .setImage(`attachment://${selectedCard.code}.png`)
-        .setDescription(`**Transaction confirmed!** You spent \`250 credits\` <:credits:1357992150457126992> and received Signal Data: \`${selectedCard.code}\`.
-
-💰 **Remaining Balance:** \`${userData.wallet.toLocaleString()}\` credits`);
+        .setDescription(`**Transaction confirmed!** 
+            
+        You spent \`250 credits\` <:credits:1357992150457126992> and received Signal Data: \`${selectedCard.code}\`. 
+        **Remaining Balance:** \`${userData.wallet.toLocaleString()}\` credits`);
 
     message.reply({
         embeds: [embed],

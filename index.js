@@ -301,7 +301,7 @@ client.on('messageCreate', async (message) => {
 
             case 'ashop':
                 // Extract name in quotes
-                var arguments = args;
+                var cmdArgs = args;
                 let nameMatch = arguments.join(' ').match(/"([^"]+)"/);
                 if (!nameMatch) return message.reply('Invalid format. Name must be in quotes.');
                 let name = nameMatch[1];

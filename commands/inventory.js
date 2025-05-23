@@ -1,15 +1,6 @@
-// inventory.js
-import fs from 'fs';
-
-const db = require('../db');
-
-const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-if (result.rows.length === 0) {
-    // User not found, handle accordingly
-    console.error('User not found in the database');
-    return;
-}
-
+const fs = require('fs');
+const path = require('path');
+const { Pool } = require('../db'); // adjust to your db module
 const {
   EmbedBuilder,
   StringSelectMenuBuilder,
@@ -19,6 +10,7 @@ const {
   ButtonStyle,
 } = require('discord.js');
 
+// In-memory state for pagination
 const activeInventories = new Map();
 
 function paginate(array, pageSize) {
@@ -29,12 +21,20 @@ function paginate(array, pageSize) {
   }, []);
 }
 
-function inventory(message) {
+async function inventory(message) {
   const targetUser = message.mentions.users.first() || message.author;
   const targetId = targetUser.id;
-  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'));
-  const userData = JSON.parse(fs.readFileSync(`./inventory/${targetId}.json`, 'utf8'));
 
+  // Optional: verify user exists in DB
+  const dbRes = await Pool.query('SELECT id FROM users WHERE id = $1', [targetId]);
+  if (dbRes.rows.length === 0) {
+    return message.reply('User not found in database.');
+  }
+
+  const metadata = JSON.parse(fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8'));
+  const userData = JSON.parse(fs.readFileSync(path.resolve(`./inventory/${targetId}.json`), 'utf8'));
+
+  // Filter owned cards
   const ownedCodes = new Set(userData.cards.map(c => c.code));
   const cards = metadata.filter(c => ownedCodes.has(c.code));
   const pages = paginate(cards, 25);
@@ -43,8 +43,6 @@ function inventory(message) {
     userId: targetId,
     cards,
     currentPage: 0,
-    totalPages: pages.length,
-    filterType: 'ALL'
   };
   activeInventories.set(message.id, state);
 
@@ -52,7 +50,7 @@ function inventory(message) {
   const row = generateButtons();
   const select = generateDropdown();
 
-  message.reply({ embeds: [embed], components: [row, select] });
+  await message.reply({ embeds: [embed], components: [row, select] });
 }
 
 function generateEmbed(user, cards, currentPage, totalPages) {
@@ -62,7 +60,7 @@ function generateEmbed(user, cards, currentPage, totalPages) {
     .setFooter({ text: `Page ${currentPage} of ${totalPages}` });
 
   cards.forEach(card => {
-    embed.addFields({ name: `${card.code}`, value: `${card.name} — ${card.group} (${card.rarity})`, inline: false });
+    embed.addFields({ name: card.code, value: `${card.name} — ${card.group} (${card.rarity})`, inline: false });
   });
 
   return embed;
@@ -84,69 +82,66 @@ function generateDropdown() {
       .setCustomId('filter_inv')
       .setPlaceholder('Filter by Rarity')
       .addOptions(
-        new StringSelectMenuOptionBuilder().setLabel('All').setValue('ALL'),
-        new StringSelectMenuOptionBuilder().setLabel('3G').setValue('3G'),
-        new StringSelectMenuOptionBuilder().setLabel('4G').setValue('4G'),
-        new StringSelectMenuOptionBuilder().setLabel('5G').setValue('5G'),
-        new StringSelectMenuOptionBuilder().setLabel('LTE').setValue('LTE'),
-        new StringSelectMenuOptionBuilder().setLabel('PRISM').setValue('PRISM')
+        { label: 'All', value: 'ALL' },
+        { label: '3G', value: '3G' },
+        { label: '4G', value: '4G' },
+        { label: '5G', value: '5G' },
+        { label: 'LTE', value: 'LTE' },
+        { label: 'PRISM', value: 'PRISM' }
       )
   );
 }
 
-function handleInventoryInteraction(interaction) {
+async function handleInventoryInteraction(interaction) {
   const state = activeInventories.get(interaction.message.id);
-  if (!state || interaction.user.id !== state.userId) return interaction.reply({ content: 'This is not your inventory view.', ephemeral: true });
+  if (!state || interaction.user.id !== state.userId) {
+    return interaction.reply({ content: 'This is not your inventory view.', ephemeral: true });
+  }
 
   if (interaction.customId === 'export_codes') {
     const text = state.cards.map(c => c.code).join('\n');
-    const filePath = `./temp/inventory_${state.userId}.txt`;
+    const filePath = path.resolve('./temp', `inventory_${state.userId}.txt`);
     fs.writeFileSync(filePath, text);
     return interaction.reply({ content: 'Exported card codes:', files: [filePath], ephemeral: true });
   }
 
-  const totalPages = Math.ceil(state.cards.length / 25);
+  const pages = paginate(state.cards, 25);
+  const totalPages = pages.length;
 
   if (interaction.customId === 'first_page') state.currentPage = 0;
   if (interaction.customId === 'prev_page') state.currentPage = Math.max(0, state.currentPage - 1);
   if (interaction.customId === 'next_page') state.currentPage = Math.min(totalPages - 1, state.currentPage + 1);
   if (interaction.customId === 'last_page') state.currentPage = totalPages - 1;
 
-  const currentCards = paginate(state.cards, 25)[state.currentPage];
+  const currentCards = pages[state.currentPage];
   const embed = generateEmbed(interaction.user, currentCards, state.currentPage + 1, totalPages);
   const row = generateButtons();
   const select = generateDropdown();
 
-  interaction.update({ embeds: [embed], components: [row, select] });
+  await interaction.update({ embeds: [embed], components: [row, select] });
 }
 
-function handleFilterSelection(interaction) {
+async function handleFilterSelection(interaction) {
   const state = activeInventories.get(interaction.message.id);
-  if (!state || interaction.user.id !== state.userId) return;
-
-  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'));
-  const userData = JSON.parse(fs.readFileSync(`./inventory/${state.userId}.json`, 'utf8'));
-  const ownedCodes = new Set(userData.cards.map(c => c.code));
+  if (!state || interaction.user.id !== state.userId) return interaction.reply({ content: 'Not allowed.', ephemeral: true });
 
   const filter = interaction.values[0];
-  const filtered = metadata.filter(c => {
-    const owns = ownedCodes.has(c.code);
-    return owns && (filter === 'ALL' || c.rarity === filter);
-  });
+  const metadata = JSON.parse(fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8'));
+  const userData = JSON.parse(fs.readFileSync(path.resolve(`./inventory/${state.userId}.json`), 'utf8'));
+  const ownedCodes = new Set(userData.cards.map(c => c.code));
 
-  state.cards = filtered;
+  state.cards = metadata.filter(c => ownedCodes.has(c.code) && (filter === 'ALL' || c.rarity === filter));
   state.currentPage = 0;
-  state.totalPages = Math.ceil(filtered.length / 25);
-  const currentCards = paginate(state.cards, 25)[0];
 
-  const embed = generateEmbed(interaction.user, currentCards, 1, state.totalPages);
+  const pages = paginate(state.cards, 25);
+  const embed = generateEmbed(interaction.user, pages[0], 1, pages.length);
   const row = generateButtons();
   const select = generateDropdown();
 
-  interaction.update({ embeds: [embed], components: [row, select] });
+  await interaction.update({ embeds: [embed], components: [row, select] });
 }
 
-export{
+module.exports = {
   inventory,
   handleInventoryInteraction,
   handleFilterSelection,

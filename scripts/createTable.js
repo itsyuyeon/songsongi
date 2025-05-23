@@ -1,4 +1,10 @@
-const pool = require('../db'); // assumes db.js is correctly set up for Railway DB
+import dotenv from 'dotenv';
+dotenv.config(); // 
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import pool from '../db.js'; //
 
 (async () => {
   try {
@@ -29,9 +35,20 @@ const pool = require('../db'); // assumes db.js is correctly set up for Railway 
         is_archived BOOLEAN DEFAULT FALSE
       );
 
+      CREATE TABLE users (
+        id TEXT PRIMARY KEY,
+       username TEXT,
+       wallet INTEGER,
+       syncbank INTEGER,
+       cardpacks JSONB,
+        cards JSONB
+      );
+
+
     `);
 
     console.log('✅ Tables created!');
+    console.log("✅ DATABASE_URL:", process.env.DATABASE_URL);
     process.exit();
   } catch (err) {
     console.error('❌ Error creating tables:', err);

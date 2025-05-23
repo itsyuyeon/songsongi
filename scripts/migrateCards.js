@@ -1,4 +1,4 @@
-import './loadEnv.js';
+import '../loadEnv.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -9,6 +9,9 @@ import db from '../db.js'; // Make sure db.js uses `export default`
 
 const filePath = path.join(path.resolve(), 'cards', 'metadata.json');
 const cards = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf-8'));
+
+console.log('✅ DATABASE_URL =', process.env.DATABASE_URL);
+
 
 for (const card of cards) {
   await db.query(

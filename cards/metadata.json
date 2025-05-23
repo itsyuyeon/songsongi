@@ -49,18 +49,6 @@
         "isArchived": false
     },
     {
-        "code": "LTISID",
-        "rarity": "LTE",
-        "group": "i-dle",
-        "era": "I SWAY",
-        "idolname": "i-dle",
-        "series": "LT01",
-        "price": 1,
-        "name": "i-dle I SWAY",
-        "image": "./cards/LTISID.png",
-        "isArchived": false
-    },
-    {
         "code": "LTBRAM",
         "rarity": "LTE",
         "group": "ARTMS",
@@ -117,7 +105,7 @@
         "idolname": "Hanbin",
         "series": "S01",
         "price": 1,
-        "name": "ZeroBaseOne Hanbin",
+        "name": "Hanbin",
         "image": "./cards/3GSWHB.png",
         "isArchived": false
     },
@@ -195,7 +183,7 @@
         "isArchived": false
     },
     {
-        "code": "4GSGSB",
+        "code": "4GSMSB",
         "rarity": "4G",
         "group": "IZNA",
         "era": "Sign",
@@ -203,7 +191,7 @@
         "series": "S01",
         "price": 1,
         "name": "Saebi",
-        "image": "./cards/4GSGSB.png",
+        "image": "./cards/4GSMSB.png",
         "isArchived": false
     },
     {
@@ -288,6 +276,18 @@
         "price": 1,
         "name": "Yuqi",
         "image": "./cards/4GISYQ.png",
+        "isArchived": false
+    },
+    {
+        "code": "4GMJYR",
+        "rarity": "4G",
+        "group": "SOLOSIT",
+        "era": "Op.22 Y-Waltz : in Major",
+        "idolname": "Jo Yuri",
+        "series": "S01",
+        "price": 1,
+        "name": "Jo Yuri",
+        "image": "./cards/4GMJYR.png",
         "isArchived": false
     },
     {

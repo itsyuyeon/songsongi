@@ -2,12 +2,12 @@ const fs = require('fs');
 
 function add(message, userId, amount) {
     const hasAdminRole = message.member.roles.cache.some(role =>
-        role.name === "head admin" || role.name === "system operator"
+        role.name === "head admin" || role.name === "community staff"
     );
     const isHeadAdmin = message.member.roles.cache.some(role => role.name === "head admin");
 
     if (!hasAdminRole) {
-        message.reply('Only system operator or head admin can use this command!');
+        message.reply('You are not allowed to use this!');
         return;
     }
 
@@ -47,7 +47,7 @@ function add(message, userId, amount) {
     receiverData.wallet = (receiverData.wallet || 0) + amount;
 
     fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(receiverData, null, 2));
-    message.channel.send(`Added ${amount} credits to <@${userId}>'s wallet!`);
+    message.channel.send(`Added ${amount} credits to <@${userId}>'s wallet!`` <:credits:1357992150457126992>`);
 }
 
 module.exports = {

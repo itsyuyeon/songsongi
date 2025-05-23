@@ -1,6 +1,7 @@
 {
-  "name": "kpopcardcollectingbot",
-  "version": "1.0.0",
+  "name": "HyperSync",
+  "version": "2.0.0",
+  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {

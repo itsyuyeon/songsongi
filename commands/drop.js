@@ -2,6 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 
+const db = require('../db');
+
+const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+if (result.rows.length === 0) {
+    // User not found, handle accordingly
+    console.error('User not found in the database');
+    return;
+}
+
 // Store active drops and last claim timestamps
 const activeDrops = new Map();
 const lastClaimTimestamps = new Map();

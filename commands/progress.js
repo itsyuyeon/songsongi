@@ -1,6 +1,15 @@
 const fs = require('fs');
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 
+const db = require('../db');
+
+const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+if (result.rows.length === 0) {
+    // User not found, handle accordingly
+    console.error('User not found in the database');
+    return;
+}
+
 async function progress(message, group) {
     let colour = "#98b6f6";
     if (group.startsWith('LTE')) {

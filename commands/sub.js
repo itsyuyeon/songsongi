@@ -2,7 +2,7 @@ const fs = require('fs');
 
 function sub(message, userId, amount) {
     const hasAdminRole = message.member.roles.cache.some(role =>
-        role.name === "head admin" || role.name === "community staff "
+        role.name === "head admin" || role.name === "community staff"
     );
     const isHeadAdmin = message.member.roles.cache.some(role => role.name === "head admin");
 

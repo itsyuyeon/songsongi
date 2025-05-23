@@ -2,12 +2,12 @@ const fs = require('fs');
 
 function removeCard(message, userId, code, amount) {
     const hasAdminRole = message.member.roles.cache.some(role =>
-        role.name === "head admin" || role.name === "system operator"
+        role.name === "head admin" || role.name === "community staff"
     );
     const isHeadAdmin = message.member.roles.cache.some(role => role.name === "head admin");
 
     if (!hasAdminRole) {
-        message.reply('Only system operator or head admin can use this command!');
+        message.reply('You are not allowed to use this!');
         return;
     }
 

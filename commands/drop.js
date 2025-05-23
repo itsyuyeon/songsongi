@@ -34,10 +34,12 @@ async function drop(message) {
     // const canvas = createCanvas(6500, 3000);
     const canvas = createCanvas(2300, 1000);
     const ctx = canvas.getContext('2d');
+    const { createCanvas, loadImage } = require('canvas');
+
 
     // Load and draw images side by side
     for (let i = 0; i < cards.length; i++) {
-        const img = await loadImage(./cards/${cards[i].code}.png);
+        const img = await loadImage(`./cards/${cards[i].code}.png`);
         // ctx.drawImage(img, i * 300, 0, 300, 400);
         
         var width = Math.round(img.width*0.50);
@@ -130,24 +132,24 @@ async function handleButtonInteraction(interaction) {
         return interaction.reply({ content: `Wait ${waitTime} seconds before claiming from someone else's drop!`, ephemeral: true });
     }
 
-    function createCardButtons(cards) {
+    return cards.map(card => {
+        const emojiId = rarityEmotes[card.rarity];
+
+        return new ButtonBuilder()
+            .setCustomId(`pick_${card.code}`)
+            .setLabel(`${card.code} ${card.name}`)
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(emojiId ? { id: emojiId } : undefined);
+    });
+}
+
+function createCardButtons(cards) {
     const rarityEmotes = {
         "3G": "1358000209870717000",
         "4G": "1358000213322629230",
         "5G": "1358000216078417920",
         "PRISM": "1365197464961024041"
     };
-
-    return cards.map(card => {
-        const emojiId = rarityEmotes[card.rarity];
-
-        return new ButtonBuilder()
-            .setCustomId(pick_${card.code})
-            .setLabel(${card.code} ${card.name})
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji(emojiId ? { id: emojiId } : undefined);
-    });
-}
 
     const code = interaction.customId.split('_')[1];
     const cardMeta = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8')).find(c => c.code === code);

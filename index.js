@@ -2,7 +2,8 @@ import config from './config.json' assert { type: 'json' };
 
 import dotenv from 'dotenv';
 dotenv.config();
-const { Client, GatewayIntentBits } = require('discord.js');
+import { Client, GatewayIntentBits } from 'discord.js';
+
 import fs from 'fs';
 
 // ✅ Move this up before using any `cmd`

@@ -1,5 +1,5 @@
 import fs from 'fs';
-const path = require('path');
+import path from 'path';
 const { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } = require('discord.js');
 
 const db = require('../db');

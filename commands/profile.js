@@ -1,6 +1,6 @@
 // const { registerFont, createCanvas, loadImage } = require('canvas');
 const { createCanvas, GlobalFonts, loadImage } = require('@napi-rs/canvas');
-const path = require('path');
+import path from 'path';
 GlobalFonts.registerFromPath(path.join(__dirname, "../assests/NasalizationRg.otf"), 'Nasalization')
 const { request } = require('undici');
 import fs from 'fs';

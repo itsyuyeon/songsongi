@@ -301,24 +301,30 @@ client.on('messageCreate', async (message) => {
 
             case 'ashop':
                 // Extract name in quotes
-                var cmdArgs = args;
-                let nameMatch = arguments.join(' ').match(/"([^"]+)"/);
+                let cmdArgs = args;
+                let nameMatch = cmdArgs.join(' ').match(/"([^"]+)"/);
                 if (!nameMatch) return message.reply('Invalid format. Name must be in quotes.');
                 let name = nameMatch[1];
+
                 // Remove name from arguments
-                arguments = arguments.join(' ').replace(`"${name}"`, '').trim().split(' ');
-                // let name = arguments.shift();
-                let descriptionMatch = arguments.join(' ').match(/"([^"]+)"/);
-                if (!descriptionMatch) return message.reply('Invalid format. Description must be in quotes.');
+                cmdArgs = cmdArgs.join(' ').replace(`"${name}"`, '').trim().split(' ');
+
+                let descriptionMatch = cmdArgs.join(' ').match(/"([^"]+)"/);
+                    if (!descriptionMatch) return message.reply('Invalid format. Description must be in quotes.');
                 let description = descriptionMatch[1];
-                // Remove description from arguments
-                arguments = arguments.join(' ').replace(`"${description}"`, '').trim().split(' ');
-                // Get remaining parameters
-                let price = arguments.shift();
-                let code = arguments.shift();
-                let amount = arguments.shift();
-                let rarities = arguments.join(' ');
-                cmd.addShop(message, name, description, price, code, amount, rarities);break;
+
+                 // Remove description from arguments
+                 cmdArgs = cmdArgs.join(' ').replace(`"${description}"`, '').trim().split(' ');
+
+                 // Get remaining parameters
+                let price = cmdArgs.shift();
+                let code = cmdArgs.shift();
+                let amount = cmdArgs.shift();
+                let rarities = cmdArgs.join(' ');
+
+    cmd.addShop(message, name, description, price, code, amount, rarities);
+    break;
+
 
             case 'rshop':
                 cmd.removeShop(message, args[0]);break;

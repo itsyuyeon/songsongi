@@ -42,7 +42,7 @@ function add(message, userId, amount) {
         message.channel.send(`You cannot add ${amount} credits!`);
         return;
     }
-
+    
     const receiverData = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
     receiverData.wallet = (receiverData.wallet || 0) + amount;
 

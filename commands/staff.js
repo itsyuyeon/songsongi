@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 function staff(message) {
     // check if user has staff role

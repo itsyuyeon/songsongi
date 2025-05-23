@@ -3,7 +3,7 @@ const { createCanvas, GlobalFonts, loadImage } = require('@napi-rs/canvas');
 const path = require('path');
 GlobalFonts.registerFromPath(path.join(__dirname, "../assests/NasalizationRg.otf"), 'Nasalization')
 const { request } = require('undici');
-const fs = require('fs');
+import fs from 'fs';
 const { AttachmentBuilder } = require('discord.js');
 var _ = require('lodash');
 

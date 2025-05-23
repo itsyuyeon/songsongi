@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 function isBlacklisted(userId) {
     const moderation = JSON.parse(fs.readFileSync('./moderation/moderation.json', 'utf8'));

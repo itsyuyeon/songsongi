@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 async function deposit(message, amount) {
     // Check if valid amount

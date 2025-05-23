@@ -1,5 +1,5 @@
 // inventory.js
-const fs = require('fs');
+import fs from 'fs';
 
 const db = require('../db');
 

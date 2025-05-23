@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 const db = require('../db');
 
 async function buy(intermsg, cardpack, amount = 1) {

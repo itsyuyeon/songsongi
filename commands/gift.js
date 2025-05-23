@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 function gift(message, args) {
     if (args.length < 3 || args.length % 2 === 0) {

@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 const { EmbedBuilder } = require('discord.js');
 
 const db = require('../db');

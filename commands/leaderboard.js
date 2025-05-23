@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const fs = require('fs');
+import fs from 'fs';
 
 function parseArgs(content) {
     const args = content.split(/\s+/);

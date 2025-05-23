@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 function sub(message, userId, amount) {
     const hasAdminRole = message.member.roles.cache.some(role =>

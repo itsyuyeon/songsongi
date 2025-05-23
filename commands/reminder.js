@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 const { EmbedBuilder } = require('discord.js');
 
 async function reminder(message, onoff, type) {

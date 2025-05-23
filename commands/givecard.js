@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 function giveCard(message, userId, code, amount) {
      const hasAdminRole = message.member.roles.cache.some(role =>

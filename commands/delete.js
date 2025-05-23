@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 function del(message, userId) {
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {

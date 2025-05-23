@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 function transfer(message, oldUser, newUser) {
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {
         message.reply('Only Head Admins can use this command!');

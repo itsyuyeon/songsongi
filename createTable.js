@@ -1,4 +1,4 @@
-const pool = require('./db'); // assumes db.js is set up with your Railway DB
+const pool = require('../db'); // assumes db.js is set up with your Railway DB
 
 (async () => {
   try {

@@ -354,7 +354,7 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-const pool = require('./db');
+const pool = require('../db');
 
 // Example usage
 pool.query('SELECT NOW()', (err, res) => {

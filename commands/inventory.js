@@ -1,5 +1,7 @@
 // inventory.js
 const fs = require('fs');
+const pool = require('./db');
+
 const {
   EmbedBuilder,
   StringSelectMenuBuilder,

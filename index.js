@@ -87,7 +87,7 @@ client.on('messageCreate', async (message) => {
             case 'inventory':
             case 'INV':
             case 'I':
-                cmd.inventory(message, args[0]); // Pass mention or ID if any 
+                cmd.inventory(message, args[0]);break; // Pass mention or ID if any 
 
             case 'shop':
             case 'Shop':

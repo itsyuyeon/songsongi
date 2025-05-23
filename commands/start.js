@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { EmbedBuilder } = require('discord.js');
+const pool = require('./db');
 
 function start(message) {
     if (hasStarted(message.author.id)) {

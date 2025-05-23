@@ -114,3 +114,6 @@ module.exports = {
     unarchive,
 
 };
+
+
+module.exports = { handleInventoryCommand };

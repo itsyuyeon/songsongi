@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function add(message, userId, amount) {
+export function add(message, userId, amount) {
     const hasAdminRole = message.member.roles.cache.some(role =>
         role.name === "head admin" || role.name === "community staff"
     );

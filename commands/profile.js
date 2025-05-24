@@ -174,10 +174,3 @@ async function getCachedOrNewImage(userId, inventory, cachePath, avatarURL) {
   fs.writeFileSync(cachePath, buffer);
   return new AttachmentBuilder(cachePath);
 }
-
-export {
-  profile,
-  bio,
-  colour,
-  profileCard
-};

@@ -48,7 +48,3 @@ export async function balance(message, arg) {
         );
 
     message.channel.send({ embeds: [embed] });
-
-export{
-    balance
-};

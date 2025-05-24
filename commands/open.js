@@ -33,7 +33,8 @@ export async function open(message, code) {
   const pack = userData.cardpacks.splice(packIndex, 1)[0];
 
   // load all un-archived metadata
-  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'))
+  const metadata = JSON
+    .parse(fs.readFileSync('./cards/metadata.json', 'utf8'))
     .filter(c => !c.archived);
 
   // draw cards

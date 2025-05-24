@@ -14,10 +14,12 @@ export const lastClaimTimestamps = new Map();
 
 export async function drop(message) {
   const userId = message.author.id;
-  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'))
+  const metadata = JSON
+    .parse(fs.readFileSync('./cards/metadata.json', 'utf8'))
+    .filter(c => !c.archived);
+
     setReminder(userId, 'drop', 5 * 60);  
 
-    .filter(c => !c.archived);
   if (metadata.length < 3) {
     await message.reply('not enough cards available for a drop.');
     return;
@@ -150,7 +152,8 @@ export async function paidDrop(message) {
   if (userData.paidDropCount >= 15) prismRate = 30;
   if (userData.paidDropCount >= 20) prismRate = 100;
 
-  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'))
+  const metadata = JSON
+    .parse(fs.readFileSync('./cards/metadata.json', 'utf8'))
     .filter(c => !c.archived);
   const weights = { '5G': 30, '4G': 50, '3G': 70, 'PRISM': prismRate };
   const card = getRandomCardWithWeights(metadata, weights);

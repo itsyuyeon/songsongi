@@ -381,8 +381,6 @@ client.on('messageCreate', async message => {
     }
 });
 
-import pool from '../db.js';
-
 (async () => {
   try {
     const res = await pool.query('SELECT NOW()');

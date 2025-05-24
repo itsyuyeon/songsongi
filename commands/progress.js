@@ -1,98 +1,105 @@
+// progress.js
 import fs from 'fs';
+import path from 'path';
 import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
+import db from '../db.js';
 
-import db from '../db.js'; 
+export async function progress(message, group) {
+  const userId = message.author.id;
 
-const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-if (result.rows.length === 0) {
-    // User not found, handle accordingly
-    console.error('User not found in the database');
-}
+  // 1) Verify user exists in DB
+  const dbRes = await db.query('SELECT id FROM users WHERE id = $1', [userId]);
+  if (dbRes.rows.length === 0) {
+    return message.reply(`You haven't synced yet—try \`.start\` first.`);
+  }
 
-async function progress(message, group) {
-    let colour = "#98b6f6";
-    if (group.startsWith('LTE')) {
-        colour = "#b40202";
-    }
+  // 2) Load local inventory & metadata
+  const userData = JSON.parse(
+    fs.readFileSync(path.resolve(`./inventory/${userId}.json`), 'utf8')
+  );
+  const metadata = JSON.parse(
+    fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8')
+  );
 
-    const userData = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));
-    const metadata = JSON.parse(fs.readFileSync(`./cards/metadata.json`, 'utf8'));
+  // 3) Filter cards matching the “group” keyword
+  const re = new RegExp(group, 'i');
+  const matched = metadata.filter(card =>
+    re.test(card.code) ||
+    re.test(card.rarity) ||
+    re.test(card.group) ||
+    re.test(card.era) ||
+    re.test(card.idolname) ||
+    re.test(card.series)
+  );
 
-    // Filter cards based on group keyword match
-    const groupPattern = new RegExp(group, 'i');
-    const matchedCards = metadata.filter(card => 
-        groupPattern.test(card.code) || 
-        groupPattern.test(card.rarity) || 
-        groupPattern.test(card.group) || 
-        groupPattern.test(card.era) || 
-        groupPattern.test(card.idolname) || 
-        groupPattern.test(card.series)
+  const total = matched.length;
+  const collected = matched.filter(c =>
+    userData.cards.some(u => u.code === c.code)
+  ).length;
+
+  // 4) Build embed
+  let colour = '#98b6f6';
+  if (group.toUpperCase().startsWith('LTE')) colour = '#b40202';
+
+  const embed = new EmbedBuilder()
+    .setTitle(`${message.author.username}'s Progress`)
+    .setColor(colour)
+    .setDescription(`__You have collected **${collected}** out of **${total}** cards__`)
+    .setFooter({
+      text: `Completion: ${total > 0 ? Math.round((collected/total)*100) : 0}%`
+    });
+
+  // 5) Group by `group` field and list missing
+  const byGroup = {};
+  for (const card of matched) {
+    byGroup[card.group] ??= [];
+    byGroup[card.group].push(card);
+  }
+  for (const grp of Object.keys(byGroup)) {
+    const cards = byGroup[grp];
+    const missing = cards.filter(c =>
+      !userData.cards.some(u => u.code === c.code)
     );
-
-    const totalCards = matchedCards.length;
-    const collectedCards = matchedCards.filter(card => userData.cards.some(userCard => userCard.code === card.code)).length;
-
-    const embed = new EmbedBuilder()
-        .setTitle(`${message.author.username}'s Progress`)
-        .setDescription(`__You have collected ${collectedCards} out of ${totalCards} cards__`)
-        .setColor(colour)
-        .setFooter({ text: `You’ve reached ${Math.round(collectedCards / totalCards * 100)}% completion` });
-
-    // Organize by group and display missing cards
-    const groups = {};
-    matchedCards.forEach(card => {
-        if (!groups[card.group]) {
-            groups[card.group] = [];
-        }
-        groups[card.group].push(card);
+    embed.addFields({
+      name: `${grp}: ${cards.length - missing.length}/${cards.length}`,
+      value: missing.length
+        ? `**Missing:** ${missing.map(c => c.name).join(', ')}\n**Codes:** ${missing.map(c => c.code).join(', ')}`
+        : '✅ All collected!'
     });
+  }
 
-    for (const group in groups) {
-        const cards = groups[group];
-        const missing = cards.filter(card => !userData.cards.some(userCard => userCard.code === card.code));
-        const missingNames = missing.map(card => card.name).join(', ') || 'None';
-        const missingCodes = missing.map(card => card.code).join(', ') || 'None';
+  // 6) Write out missing codes to a temp file & add export button
+  const allMissing = Object.values(byGroup)
+    .flat()
+    .filter(c => !userData.cards.some(u => u.code === c.code))
+    .map(c => c.code);
 
-        embed.addFields({
-            name: `${group} ${cards.length - missing.length}/${cards.length}`,
-            value: `**Missing:** ${missingNames}\n**Codes:** ${missingCodes}`
-        });
-    }
+  const fileName = `missing-${userId}-${Date.now()}.txt`;
+  const filePath = path.resolve('./temp', fileName);
+  fs.writeFileSync(filePath, allMissing.join('\n') || 'None');
 
-    const allMissingCodes = Object.values(groups).flatMap(cards =>
-        cards.filter(card => !userData.cards.some(userCard => userCard.code === card.code))
-    ).map(card => card.code);
+  const exportBtn = new ButtonBuilder()
+    .setCustomId('export_missing')
+    .setLabel('Export Missing Codes')
+    .setStyle(ButtonStyle.Primary);
 
-    const exportText = allMissingCodes.join('\n') || 'You have collected all cards!';
-    const fileName = `missing-cards-${message.author.id}.txt`;
-    fs.writeFileSync(`./temp/${fileName}`, exportText);
+  const row = new ActionRowBuilder().addComponents(exportBtn);
 
-    const exportButton = new ButtonBuilder()
-        .setCustomId('export_missing')
-        .setLabel('📄 Export Missing Codes')
-        .setStyle(ButtonStyle.Primary);
+  // 7) Send embed + collector for the button
+  const reply = await message.reply({ embeds: [embed], components: [row] });
 
-    const row = new ActionRowBuilder().addComponents(exportButton);
+  const collector = reply.createMessageComponentCollector({
+    filter: i => i.customId === 'export_missing' && i.user.id === userId,
+    max: 1,
+    time: 60_000
+  });
 
-    const reply = await message.reply({
-        embeds: [embed],
-        components: [row]
+  collector.on('collect', async interaction => {
+    await interaction.reply({
+      content: `Here is your missing codes list:`,
+      files: [filePath],
+      ephemeral: true
     });
-
-    const filter = i => i.customId === 'export_missing' && i.user.id === message.author.id;
-    const collector = reply.createMessageComponentCollector({ filter, time: 60000, max: 1 });
-
-    collector.on('collect', async interaction => {
-        await interaction.reply({
-            content: `Here's your exported list of missing card codes.`,
-            files: [`./temp/${fileName}`],
-            ephemeral: true
-        });
-
-        setTimeout(() => {
-            fs.unlink(`./temp/${fileName}`, err => {
-                if (err) console.error("Failed to delete temp file:", err);
-            });
-        }, 10000);
-    });
+    setTimeout(() => fs.unlink(filePath, () => {}), 10_000);
+  });
 }

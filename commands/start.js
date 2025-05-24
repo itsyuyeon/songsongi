@@ -21,17 +21,29 @@ export async function start(message) {
     });
   }
 
-  // Insert user into database
+  // Insert user into database, including a `reminders` JSONB column
   await db.query(
-    `INSERT INTO users (id, username, wallet, syncbank, cardpacks, cards)
-     VALUES ($1, $2, $3, $4, $5, $6)`,
+    `INSERT INTO users
+       (id, username, wallet, syncbank, cardpacks, cards, reminders)
+     VALUES
+       ($1, $2, $3, $4, $5, $6, $7)`,
     [
       userId,
       message.author.username,
       2000, // Starting wallet
       0,    // Starting syncbank
       [],   // Empty cardpacks
-      []    // Empty cards
+      [],   // Empty cards
+      {     // Initialize all eight reminder slots
+        drop:    0,
+        claim:   0,
+        pd:      0,
+        sync:    0,
+        login:   0,
+        weekly:  0,
+        booster: 0,
+        staff:   0
+      }
     ]
   );
 
@@ -50,7 +62,7 @@ export async function start(message) {
  * Checks if a user is already in the database.
  */
 export async function hasStarted(userId) {
-  const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+  const result = await db.query('SELECT 1 FROM users WHERE id = $1', [userId]);
   return result.rows.length > 0;
 }
 

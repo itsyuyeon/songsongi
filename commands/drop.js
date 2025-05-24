@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } from 'discord.js';
 import { createCanvas, loadImage } from 'canvas';
+import { setReminder } from './commands/reminder.js';   // <-- import the scheduler
 
 // Store active drops and last claim timestamps
 export const activeDrops = new Map();
@@ -10,9 +11,12 @@ export const lastClaimTimestamps = new Map();
 /**
  * Initiates a server drop of random cards.
  */
+
 export async function drop(message) {
   const userId = message.author.id;
   const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'))
+    setReminder(userId, 'drop', 5 * 60);  
+
     .filter(c => !c.archived);
   if (metadata.length < 3) {
     await message.reply('not enough cards available for a drop.');
@@ -67,6 +71,7 @@ export async function drop(message) {
  */
 export async function handleButtonInteraction(interaction) {
   const dropInfo = activeDrops.get(interaction.message.id);
+
   if (!dropInfo) {
     await interaction.reply({ content: 'This drop has expired!', ephemeral: true });
     return;
@@ -84,6 +89,9 @@ export async function handleButtonInteraction(interaction) {
     await interaction.reply({ content: 'you have already claimed from this drop!', ephemeral: true });
     return;
   }
+
+    // schedule the next “go claim another one” ping in 5 minutes:
+  setReminder(interaction.user.id, 'claim', 5 * 60);
 
   const elapsed = now - dropInfo.timestamp;
   const isOwner = interaction.user.id === dropInfo.userId;
@@ -164,6 +172,9 @@ export async function paidDrop(message) {
     .setDescription(`You spent 250 credits and received: \`${card.code}\`\nRemaining Balance: \`${userData.wallet}\``);
   const img = new AttachmentBuilder(path.resolve(__dirname, `../cards/${card.code}.png`));
   await message.reply({ embeds: [embed], files: [img] });
+
+      setReminder(userId, 'pd', 0.5); // 0.5 minutes = 30s
+
 }
 
 /**

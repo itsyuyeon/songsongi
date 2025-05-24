@@ -207,7 +207,7 @@ client.on('messageCreate', async message => {
                 }
                 cmd.setCooldown(message.author.id, 'paidDrop', 0.5);
                 await cmd.paidDrop(message);
-                cmd.setReminder(message.author.id, 'paidDrop', 0.5);
+                cmd.setReminder(message.author.id, 'pd', 0.5);
             break;
 
             case 'reminder':
@@ -240,7 +240,7 @@ client.on('messageCreate', async message => {
             case 'login':
                 if (!inCorrectChannel(message, 'login')) return;
                 await cmd.login(message);
-                cmd.setReminder(message.author.id, 'login', 86400);
+                cmd.setReminder(message.author.id, 'login', 24 * 60 * 60);;
                 break;
 
             case 'sync':
@@ -306,7 +306,7 @@ client.on('messageCreate', async message => {
                     cmd.setCooldown(message.author.id, 'staff', 20160); // sync
                 }
                 await cmd.staff(message);
-                cmd.setReminder(message.author.id, 'staff', 20160);
+                cmd.setReminder(message.author.id, 'staff', 14 * 24 * 60 * 60);
                 break;
 
             case 'givecard':
@@ -383,6 +383,18 @@ client.on('messageCreate', async message => {
                 }
                 cmd.drop(message);
                 cmd.setReminder(message.author.id, 'boosterDrop', 5);
+                break;
+
+             case 'booster':
+                cmd.booster(message);
+                cmd.setReminder(message.author.id, 'booster', 7 * 24 * 60 * 60);
+                break;
+
+            case 'weekly':
+                cmd.weekly(message);
+                cmd.setReminder(message.author.id, 'weekly', 7 * 24 * 60 * 60);
+                break;
+
 
         }
     }

@@ -1,24 +1,53 @@
 import fs from 'fs';
+import path from 'path';
 
-async function withdraw(message, amount) {
-    // Check if valid amount
-    amount = parseInt(amount);
-    if (!amount || isNaN(amount) || amount <= 0) {
-        message.reply('Usage: .withdraw <amount>');
-        return;
-    }
+/**
+ * Withdraw credits from the user’s syncbank into their wallet.
+ * Usage: .withdraw <amount>
+ */
+export async function withdraw(message, amountArg) {
+  // Parse & validate amount
+  const amount = parseInt(amountArg, 10);
+  if (isNaN(amount) || amount <= 0) {
+    await message.reply('Usage: `.withdraw <amount>` (must be a positive number)');
+    return;
+  }
 
-    // Check if the user has enough money
-    const userData = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));
-    if (userData.syncbank < amount) {
-        message.reply(`You don't have enough money! You only have ${userData.syncbank} credits.`);
-        return;
-    }
+  const userFile = path.resolve('./inventory', `${message.author.id}.json`);
+  let userData;
 
-    // withdraw the money
-    userData.syncbank -= amount;
-    userData.wallet += amount;
-    fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
+  // Load user data
+  try {
+    userData = JSON.parse(fs.readFileSync(userFile, 'utf8'));
+  } catch (err) {
+    console.error('Failed to read inventory file:', err);
+    await message.reply('Could not access your inventory data.');
+    return;
+  }
 
-    message.channel.send(`You have withdrew ${amount} credits! Your Syncbank's new balance is ${userData.syncbank} credits.`);
+  // Check balance
+  if (userData.syncbank < amount) {
+    await message.reply(
+      `You don’t have enough credits in Syncbank (you have ${userData.syncbank}).`
+    );
+    return;
+  }
+
+  // Perform withdrawal
+  userData.syncbank -= amount;
+  userData.wallet = (userData.wallet || 0) + amount;
+
+  // Save changes
+  try {
+    fs.writeFileSync(userFile, JSON.stringify(userData, null, 2));
+  } catch (err) {
+    console.error('Failed to write inventory file:', err);
+    await message.reply('Could not save your new balance.');
+    return;
+  }
+
+  // Confirm to user
+  await message.reply(
+    `You withdrew **${amount.toLocaleString()}** credits. Your new Syncbank balance: **${userData.syncbank.toLocaleString()}**.`
+  );
 }

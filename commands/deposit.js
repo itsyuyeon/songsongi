@@ -1,25 +1,31 @@
+// commands/deposit.js
 import fs from 'fs';
 
-async function deposit(message, amount) {
-    // Check if valid amount
-    amount = parseInt(amount);
-    if (!amount || isNaN(amount) || amount <= 0) {
-        message.reply('Usage: .deposit <amount>');
-        return;
-    }
+export async function deposit(message, amount) {
+  // Check if valid amount
+  amount = parseInt(amount);
+  if (!amount || isNaN(amount) || amount <= 0) {
+    await message.reply('Usage: .deposit <amount>');
+    return;
+  }
 
-    // Check if the user has enough money
-    const userData = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));
-    if (userData.wallet < amount) {
-        message.reply(`You don't have enough money! You only have ${userData.wallet} credits.`);
-        return;
-    }
+  // Load user data
+  const file = `./inventory/${message.author.id}.json`;
+  const userData = JSON.parse(fs.readFileSync(file, 'utf8'));
 
-    // Deposit the money
-    userData.wallet -= amount;
-    userData.syncbank += amount;
-    fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
+  // Check wallet
+  if (userData.wallet < amount) {
+    await message.reply(`You don't have enough money! You only have ${userData.wallet.toLocaleString()} credits.`);
+    return;
+  }
 
-    message.channel.send(`You have deposited ${amount} credits <:credits:1357992150457126992>! Your syncbank's new balance is ${userData.syncbank} credits <:credits:1357992150457126992>.`);
+  // Deposit
+  userData.wallet -= amount;
+  userData.syncbank += amount;
+  fs.writeFileSync(file, JSON.stringify(userData, null, 2));
+
+  await message.channel.send(
+    `You have deposited ${amount.toLocaleString()} credits <:credits:1357992150457126992>!\n` +
+    `Your syncbank's new balance is ${userData.syncbank.toLocaleString()} credits <:credits:1357992150457126992>.`
+  );
 }
-

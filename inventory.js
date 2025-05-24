@@ -144,8 +144,3 @@ async function handleFilterSelection(interaction) {
   await interaction.update({ embeds: [embed], components: [row, select] });
 }
 
-export {
-  inventory,
-  handleInventoryInteraction,
-  handleFilterSelection,
-};

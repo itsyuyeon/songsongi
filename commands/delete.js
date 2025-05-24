@@ -24,7 +24,3 @@ export function del(message, userId) {
     fs.unlinkSync(`./inventory/${userId}.json`);
     message.reply(`User with ID ${userId} has been deleted.`);
 }
-
-export{
-    del
-};

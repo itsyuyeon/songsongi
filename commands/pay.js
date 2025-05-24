@@ -41,7 +41,3 @@ export function pay(message, userId, amount) {
         message.channel.send('You do not have enough credits!');
     }
 }
-
-export{
-    pay
-};

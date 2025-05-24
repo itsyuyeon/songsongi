@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function del(message, userId) {
+export function del(message, userId) {
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {
         message.reply('Only head admins can use this command!');
         return;

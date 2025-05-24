@@ -200,6 +200,3 @@ export function gift(message, args) {
     message.channel.send('No cards were gifted.');
   }
 }
-export {
-  gift
-};

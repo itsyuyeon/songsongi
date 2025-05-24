@@ -9,7 +9,7 @@ if (result.rows.length === 0) {
     console.error('User not found in the database');
 }
 
-function cooldown(message) {
+export function cooldown(message) {
     const userId = message.author.id;
     const username = message.author.username;
     const inventory = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
@@ -75,12 +75,12 @@ function cooldown(message) {
     message.channel.send({ embeds: [embed] });
 }
 
-function isCooldown(userId, command) {
+export function isCooldown(userId, command) {
     const inventory = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
     return inventory.cooldown[command] > Date.now();
 }
 
-function cooldownMessage(message, command) {
+export function cooldownMessage(message, command) {
     const inventory = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));
     const timeLeft = Math.floor((inventory.cooldown[command] - Date.now()) / 1000);
     const minutes = Math.floor(timeLeft / 60);
@@ -95,7 +95,7 @@ function cooldownMessage(message, command) {
     });
 }
 
-function setCooldown(userId, command, time) {
+export function setCooldown(userId, command, time) {
     const inventory = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
     inventory.cooldown[command] = Date.now() + time*60000;
     fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(inventory, null, 2));

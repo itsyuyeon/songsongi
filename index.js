@@ -8,6 +8,12 @@ import { inCorrectChannel, isAllowedChannel } from './channel.js';
 import pool from './db.js';
 import { reminderLoop, stopReminderLoop } from './commands/reminder.js';
 
+process
+  .on('uncaughtException', err => console.error('Uncaught Exception', err))
+  .on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at', promise, 'reason:', reason);
+  });
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -73,7 +79,12 @@ client.on('messageCreate', async message => {
                     return cmd.cooldownMessage(message, 'drop');
                 }
                 cmd.setCooldown(message.author.id, 'drop', 5);
-                cmd.drop(message);
+                try {
+                await cmd.drop(message);
+                } catch (err) {
+                console.error('Error running .drop:', err);
+                message.reply('Oh no, something went wrong with that drop command.');
+                }
                 cmd.setReminder(message.author.id, 'drop', 5);
             break;
                 

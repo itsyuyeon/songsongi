@@ -1,157 +1,139 @@
+// src/commands/sell.js
 import fs from 'fs';
+import { EmbedBuilder } from 'discord.js';
 
-/**
- * .sell <@user> g <prefix> all|dupes
- * .sell <@user> <code> [<code>…] [all|dupes]
- * .sell <@user> <code> <amt> [<code> <amt>…]
- */
-export function sell(message, userId, ...args) {
-  // —————————————— validate mention/ID ——————————————
+export async function sell(message, userId, ...params) {
+  // 1) Validate & normalize target user
   if (!userId) {
-    return message.channel.send('Usage: `.sell <@username/User ID> <…>`');
+    return message.channel.send('Usage: `.sell <@user> <cards...>`');
   }
-  if (userId.startsWith('<@')) userId = userId.replace(/[<@&>]/g, '');
-  else if (userId.startsWith('@')) userId = userId.slice(1);
+  if (userId.startsWith('<@')) userId = userId.replace(/[<@!>]/g, '');
   if (!/^\d+$/.test(userId)) {
-    return message.channel.send('Invalid user ID!');
+    return message.channel.send('Invalid user mention or ID.');
   }
   if (userId === message.author.id) {
-    return message.channel.send("You can't sell cards to yourself!");
+    return message.channel.send('You cannot sell to yourself.');
   }
   const invPath = `./inventory/${userId}.json`;
   if (!fs.existsSync(invPath)) {
     return message.channel.send('That user has no inventory.');
   }
 
-  // —————————————— load data ——————————————
-  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'));
-  const senderData = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));
+  // 2) Load data
+  const senderPath = `./inventory/${message.author.id}.json`;
+  const senderData = JSON.parse(fs.readFileSync(senderPath, 'utf8'));
   const receiverData = JSON.parse(fs.readFileSync(invPath, 'utf8'));
+  const metadata = JSON.parse(fs.readFileSync('./cards/metadata.json', 'utf8'));
 
-  // —————————————— group-sale? .sell @u g PREFIX all|dupes ——————————————
-  // …inside sell(message, userId, ...args)
+  // 3) Parse params into a list of { code, amount }
+  let items = [];
 
-if (args[0]?.toLowerCase() === 'g') {
-  const prefix = args[1]?.toUpperCase();
-  const flag   = args[2]?.toLowerCase();
-  if (!prefix || prefix.length !== 4 || !['all','dupes'].includes(flag)) {
-    return message.channel.send('Usage: `.sell @user g <4-char prefix> all/dupes`');
-  }
-
-  // only match on first 4 chars
-  const matches = senderData.cards.filter(c => c.code.slice(0, 4) === prefix);
-  if (!matches.length) {
-    return message.channel.send(`No cards whose code starts with \`${prefix}\`.`);
-  }
-
-  // build sales list
-  const sales = matches.map(({ code, count }) => {
-    const amt = flag === 'all'
-      ? count
-      : Math.max(0, count - 1);
-    return { code, amt };
-  }).filter(s => s.amt > 0);
-}
-    return processSales(message, sales, senderData, receiverData, metadata, userId);
-  }
-
-  // —————————————— parse general args ——————————————
-  // detect final global flag
-  let globalFlag = null;
-  if (['all','dupes'].includes(args.slice(-1)[0]?.toLowerCase())) {
-    globalFlag = args.pop().toLowerCase();
-  }
-
-  // if the second token is a number, we do <code> <amt> pairs
-  let sales = [];
-  if (args.length >= 2 && /^\d+$/.test(args[1])) {
-    for (let i = 0; i < args.length; i += 2) {
-      const code = args[i].toUpperCase();
-      const amt  = Math.abs(parseInt(args[i+1]));
-      sales.push({ code, amt });
+  const last = params[params.length - 1]?.toLowerCase();
+  // 3a) Group‐sale branch
+  if (params[0]?.toLowerCase() === 'g') {
+    const prefix = params[1];
+    const action = params[2]?.toLowerCase();
+    if (!prefix || !['all', 'dupes'].includes(action)) {
+      return message.channel.send('Usage: `.sell @user g <prefix> all|dupes`');
     }
-  } else {
-    // otherwise each arg is a code, amount based on globalFlag or default 1
-    for (let codeArg of args) {
-      const code = codeArg.toUpperCase();
-      let amt = 1;
-      if (globalFlag === 'all')    amt = senderData.cards.find(c => c.code===code)?.count || 0;
-      else if (globalFlag === 'dupes') amt = Math.max(0,(senderData.cards.find(c => c.code===code)?.count||0)-1);
-      sales.push({ code, amt });
+    // find all sender cards matching prefix
+    const matches = senderData.cards.filter(c => c.code.startsWith(prefix));
+    if (!matches.length) {
+      return message.channel.send(`No cards found with prefix \`${prefix}\`.`);
+    }
+    for (const { code, count } of matches) {
+      let amt = action === 'all'
+        ? count
+        : Math.max(0, count - 1);
+      if (amt > 0) items.push({ code, amount: amt });
     }
   }
-
-  // must have at least one sale
-  if (!sales.length) {
-    return message.channel.send('No valid codes or amounts provided.');
+  // 3b) Unlimited codes + global action
+  else if (['all', 'dupes'].includes(last)) {
+    const action = last;
+    const codes = params.slice(0, -1);
+    if (!codes.length) {
+      return message.channel.send('You must specify at least one code.');
+    }
+    for (const code of codes) {
+      const meta = metadata.find(c => c.code === code);
+      if (!meta) return message.channel.send(`Invalid code: \`${code}\`.`);
+      const own = senderData.cards.find(c => c.code === code)?.count || 0;
+      if (!own) return message.channel.send(`You don’t have any \`${code}\`.`);
+      let amt = action === 'all' ? own : Math.max(0, own - 1);
+      if (amt > 0) items.push({ code, amount: amt });
+    }
+  }
+  // 3c) Code/amount pairs
+  else {
+    if (params.length % 2 !== 0) {
+      return message.channel.send('For specific sells, use pairs: `<code> <amount>`.');
+    }
+    for (let i = 0; i < params.length; i += 2) {
+      const code = params[i];
+      const amt = parseInt(params[i+1], 10);
+      if (isNaN(amt) || amt < 1) {
+        return message.channel.send(`Invalid amount for ${code}: \`${params[i+1]}\`.`);
+      }
+      const meta = metadata.find(c => c.code === code);
+      if (!meta) return message.channel.send(`Invalid code: \`${code}\`.`);
+      const own = senderData.cards.find(c => c.code === code)?.count || 0;
+      if (own < amt) {
+        return message.channel.send(`You only have ${own} of \`${code}\`, cannot sell ${amt}.`);
+      }
+      items.push({ code, amount: amt });
+    }
   }
 
-  return processSales(message, sales, senderData, receiverData, metadata, userId);
-
-// —————————————— shared sale logic ——————————————
-function processSales(message, sales, senderData, receiverData, metadata, receiverId) {
-  // validate each
+  // 4) Perform the sale
   let totalCredits = 0;
-  const prices = code => code.startsWith('3G') ? 100
-                    : code.startsWith('4G') ? 200
-                    : code.startsWith('5G') ? 400
-                    : 0;
-
-  for (let { code, amt } of sales) {
-    const cardMeta = metadata.find(c => c.code === code);
-    if (!cardMeta) {
-      return message.channel.send(`Invalid card code: \`${code}\``);
+  for (const { code, amount } of items) {
+    // remove from sender
+    const idx = senderData.cards.findIndex(c => c.code === code);
+    senderData.cards[idx].count -= amount;
+    if (senderData.cards[idx].count <= 0) {
+      senderData.cards.splice(idx, 1);
     }
-    const owned = senderData.cards.find(c => c.code === code)?.count || 0;
-    if (amt > owned) {
-      return message.channel.send(`You only have ${owned} of \`${code}\`, can't sell ${amt}.`);
+    // add to receiver
+    const rIdx = receiverData.cards.findIndex(c => c.code === code);
+    if (rIdx === -1) {
+      receiverData.cards.push({ code, count: amount });
+    } else {
+      receiverData.cards[rIdx].count += amount;
     }
-    totalCredits += prices(code) * amt;
+    // compute credit
+    let creditPer = 0;
+    if (code.startsWith('3G')) creditPer = 100;
+    else if (code.startsWith('4G')) creditPer = 200;
+    else if (code.startsWith('5G')) creditPer = 400;
+    totalCredits += creditPer * amount;
   }
 
-  // handle hoard/reset
+  // 5) Respect hoard limits on receiver
   const now = Date.now();
   if (now > receiverData.hoard.reset) {
     receiverData.hoard.reset = now + 86400000;
     receiverData.hoard.remaining = Math.min(receiverData.wallet, receiverData.hoard.limit);
-    receiverData.wallet -= receiverData.hoard.remaining;
   }
   if (totalCredits > receiverData.hoard.remaining) {
     return message.channel.send(
-      `Transaction exceeds their hoard limit: they have ${receiverData.hoard.remaining} credits left.`
+      `This sale would exceed <@${userId}>\’s hoard remaining (\`${receiverData.hoard.remaining}\` credits).`
     );
   }
-
-  // perform transfers
-  for (let { code, amt } of sales) {
-    // remove from sender
-    const sIdx = senderData.cards.findIndex(c => c.code === code);
-    senderData.cards[sIdx].count -= amt;
-    if (senderData.cards[sIdx].count <= 0) {
-      senderData.cards.splice(sIdx, 1);
-    }
-    // add to receiver
-    const rIdx = receiverData.cards.findIndex(c => c.code === code);
-    if (rIdx >= 0) receiverData.cards[rIdx].count += amt;
-    else receiverData.cards.push({ code, count: amt });
-  }
-
-  // adjust wallets & hoard
-  senderData.wallet += totalCredits;
   receiverData.hoard.remaining -= totalCredits;
+  senderData.wallet += totalCredits;
 
-  // save both
-  fs.writeFileSync(`./inventory/${message.author.id}.json`,
-    JSON.stringify(senderData, null, 2));
-  fs.writeFileSync(`./inventory/${receiverId}.json`,
-    JSON.stringify(receiverData, null, 2));
+  // 6) Persist & confirm
+  fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(receiverData, null, 2));
+  fs.writeFileSync(senderPath, JSON.stringify(senderData, null, 2));
 
-  // reply
-  const summary = sales
-    .map(s => `${s.amt}×${s.code}`)
-    .join(', ');
-  message.channel.send(
-    `Sold ${summary} to <@${receiverId}> for ${totalCredits} credits!`
-  );
+  const embed = new EmbedBuilder()
+    .setTitle('🛒 Sale Complete')
+    .setDescription(
+      `You sold:\n` +
+      items.map(i => `• ${i.amount}× \`${i.code}\``).join('\n') +
+      `\n\nto <@${userId}> for **${totalCredits}** credits.`
+    )
+    .setColor('#00AA00');
+  message.channel.send({ embeds: [embed] });
 }
-

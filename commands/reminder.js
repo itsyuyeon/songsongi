@@ -4,94 +4,85 @@ import { EmbedBuilder } from 'discord.js';
 
 const INVENTORY_DIR = path.resolve('./inventory');
 
-// The command‐types we support reminders for:
-const REMINDER_TYPES = [
+// these strings must match your calls to setReminder(...)
+export const REMINDER_TYPES = [
   'drop',
   'claim',
   'paidDrop',
   'sync',
   'login',
-  'checkin',   // your booster‐exclusive weekly command
-  'booster',  // your booster‐exclusive quick command
-  'staff'     // staff‐exclusive reminder
+  'checkin',   // maps to your weekly task
+  'booster',
+  'staff'
 ];
 
 /**
- * Toggles global reminders on/off and sets delivery method (ping vs DM).
- * Usage: .reminder on ping
- *        .reminder off
+ * Toggle reminders on/off and ping vs DM.
  */
 export async function reminder(message, onoff, method) {
   const file = path.join(INVENTORY_DIR, `${message.author.id}.json`);
   const u = JSON.parse(fs.readFileSync(file, 'utf8'));
 
-  if (onoff !== 'on' && onoff !== 'off') {
-    return message.reply('usage: `.reminder on <ping|dm>` or `.reminder off`');
-  }
-  u.reminder.on = (onoff === 'on');
+  if (!['on','off'].includes(onoff))
+    return message.reply('Usage: `.reminder on <ping|dm>` or `.reminder off`');
 
-  if (onoff === 'on') {
-    if (method === 'ping' || method === 'dm') {
-      u.reminder.type = method;
-    } else {
-      return message.reply('when turning reminders on, specify `ping` or `dm`.');
-    }
+  u.reminder.on = (onoff === 'on');
+  if (u.reminder.on) {
+    if (!['ping','dm'].includes(method))
+      return message.reply('When turning on, specify `ping` or `dm`.');
+    u.reminder.type = method;
   }
 
   fs.writeFileSync(file, JSON.stringify(u, null, 2));
-  message.reply({
+  await message.reply({
     embeds: [
       new EmbedBuilder()
-        .setTitle('reminder Settings Updated')
-        .setDescription(`reminders are now **${u.reminder.on ? 'ON' : 'OFF'}**`)
-        .addFields({ name: 'delivery', value: u.reminder.type, inline: true })
+        .setTitle('Reminder Settings Updated')
+        .setDescription(`Reminders are now **${u.reminder.on ? 'ON' : 'OFF'}**`)
+        .addFields({ name: 'Delivery', value: u.reminder.type, inline: true })
         .setColor('#FFEE52')
     ]
   });
 }
 
 /**
- * Schedule a reminder for a specific command type.
- * `type` must be one of REMINDER_TYPES.
- * `minutes` is how many minutes from now to remind.
+ * Schedule a reminder for userId, type in `minutes`.
  */
 export async function setReminder(userId, type, minutes) {
   if (!REMINDER_TYPES.includes(type)) return;
   const file = path.join(INVENTORY_DIR, `${userId}.json`);
   const u = JSON.parse(fs.readFileSync(file, 'utf8'));
-
   u.reminder[type] = Date.now() + minutes * 60 * 1000;
   fs.writeFileSync(file, JSON.stringify(u, null, 2));
 }
 
 /**
- * Run this once at startup.  Loops forever every minute,
- * checks each user's reminder slots, and fires any that are due.
+ * Call this once at startup.  Sends reminders every minute.
  */
 export async function reminderLoop(client) {
   while (true) {
-    // wait 1 minute
     await new Promise(r => setTimeout(r, 60_000));
-
-    const files = fs.readdirSync(INVENTORY_DIR);
-    for (const fname of files) {
+    for (const fname of fs.readdirSync(INVENTORY_DIR)) {
       const userId = path.basename(fname, '.json');
       const file = path.join(INVENTORY_DIR, fname);
-      const u = JSON.parse(fs.readFileSync(file, 'utf8'));
-
-      if (!u.reminder.on) continue;
+      let u;
+      try {
+        u = JSON.parse(fs.readFileSync(file, 'utf8'));
+      } catch (err) {
+        console.error(`Invalid JSON in ${fname}:`, err);
+        continue;
+      }
+      if (!u.reminder?.on) continue;
       const now = Date.now();
 
       for (const type of REMINDER_TYPES) {
         const due = u.reminder[type];
         if (due && due < now) {
-          // build a reminder embed
           const embed = new EmbedBuilder()
             .setTitle('Reminder')
             .setDescription(`Don’t forget to use the **.${type}** command!`)
             .setColor('#FFEE52');
 
-          // fetch the user & send
           const user = await client.users.fetch(userId);
           if (u.reminder.type === 'ping') {
             user.send({ content: `<@${userId}>`, embeds: [embed] });
@@ -99,14 +90,11 @@ export async function reminderLoop(client) {
             user.send({ embeds: [embed] });
           }
 
-          // clear that slot so it doesn’t fire again
           u.reminder[type] = null;
         }
       }
 
-      // persist any changes
       fs.writeFileSync(file, JSON.stringify(u, null, 2));
     }
   }
 }
- 

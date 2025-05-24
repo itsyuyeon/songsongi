@@ -1,7 +1,6 @@
 import fs from 'fs';
 import { EmbedBuilder } from 'discord.js';
-import { loadInventory } from './inventory.js';
-
+import { loadInventory } from '../lib/inventory.js';   // ← adjust path if you placed it somewhere else
 
 export function stash(message) {
     const embed = new EmbedBuilder()

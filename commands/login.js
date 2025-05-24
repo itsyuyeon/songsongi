@@ -2,7 +2,6 @@
 import fs from 'fs';
 import { EmbedBuilder } from 'discord.js';
 import { isCooldown, setCooldown } from './cooldown.js';
-import { setReminder } from './commands/reminder.js';   // <-- import the scheduler
 
 /**
  * Pick a random card code of the given rarity (or "signal" for 3G/4G/5G).

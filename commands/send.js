@@ -31,6 +31,3 @@ export function send(message, userId, content) {
     }
 }
 
-export{
-    send,
-};

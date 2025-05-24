@@ -34,7 +34,3 @@ export function transfer(message, oldUser, newUser) {
     
     message.reply(`Inventory transferred from ${oldUser} to ${newUser}.`);
 }
-
-export{
-    transfer
-};

@@ -23,6 +23,3 @@ async function deposit(message, amount) {
     message.channel.send(`You have deposited ${amount} credits <:credits:1357992150457126992>! Your syncbank's new balance is ${userData.syncbank} credits <:credits:1357992150457126992>.`);
 }
 
-export{
-    deposit
-};

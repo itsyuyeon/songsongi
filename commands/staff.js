@@ -12,6 +12,3 @@ export function staff(message) {
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
 }
 
-export{
-    staff,
-};

@@ -24,7 +24,3 @@ async function math(message, equation) {
         await message.reply('Error: Invalid math equation');
     }
 }
-
-export{
-    math,
-};

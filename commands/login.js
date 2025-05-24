@@ -99,7 +99,3 @@ async function login(message) {
     fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(userData, null, 2));
     await message.reply({ embeds: [embed] });
 }
-
-export{
-    login,
-};

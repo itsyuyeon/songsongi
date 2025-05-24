@@ -59,9 +59,3 @@ export function notStartedMessage(message) {
         ]
     });
 }
-
-export{
-    start,
-    hasStarted,
-    notStartedMessage
-};

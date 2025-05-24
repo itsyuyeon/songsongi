@@ -52,10 +52,3 @@ export function timeoutMessage(message) {
         ]
     });
 }
-
-export{
-    timeout,
-    removeTimeout,
-    isTimeout,
-    timeoutMessage
-};

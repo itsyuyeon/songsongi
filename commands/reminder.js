@@ -72,8 +72,3 @@ async function reminderLoop(client) {
     }
 }
 
-export{
-    reminder,
-    setReminder,
-    reminderLoop
-};

@@ -34,7 +34,3 @@ export function stash(message) {
     }
     message.reply({ embeds: [embed] });
 }
-
-export{
-    stash,
-};

@@ -81,5 +81,3 @@ async function leaderboard(message, rawArgs) {
 
     message.reply({ embeds: [embed] });
 }
-
-export{ leaderboard };

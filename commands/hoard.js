@@ -102,10 +102,3 @@ export function hoardRemove(message, code) {
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
     message.channel.send(`Removed ${code} from your hoard!`);
 }
-
-export{
-    hoardList,
-    hoardSet,
-    hoardAdd,
-    hoardRemove,
-};

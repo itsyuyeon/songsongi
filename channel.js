@@ -40,8 +40,3 @@ function inCorrectChannel(message, command) {
   // If not restricted, allow as long as it's in allowedChannels
   return isAllowedChannel(channelID);
 }
-
-export{
-  isAllowedChannel,
-  inCorrectChannel
-};

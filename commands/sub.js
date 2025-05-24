@@ -49,7 +49,3 @@ export function sub(message, userId, amount) {
 
     message.channel.send(`Removed ${amount} credits from <@${userId}>'s wallet!`);
 }
-
-export{
-    sub
-};

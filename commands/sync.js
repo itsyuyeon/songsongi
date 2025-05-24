@@ -38,6 +38,3 @@ ${credits} credits have been added to your wallet.
     message.reply({ embeds: [embed] });
 }
 
-export{
-    sync,
-};

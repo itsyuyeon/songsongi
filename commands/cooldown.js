@@ -102,9 +102,3 @@ export function setCooldown(userId, command, time) {
     return inventory.cooldown[command];
 }
 
-export{
-    cooldown,
-    isCooldown,
-    cooldownMessage,
-    setCooldown
-};

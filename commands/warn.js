@@ -48,7 +48,3 @@ export function warn(message, userId) {
     message.channel.send(`<@${userId}>, this is your ${countWarnings}${position} warning!`);
     fs.writeFileSync('./moderation/moderation.json', JSON.stringify(moderation, null, 2));
 }
-
-export{
-    warn,
-};

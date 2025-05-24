@@ -22,7 +22,3 @@ Thank you for boosting!
     message.reply({ embeds: [embed] });
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
 }
-
-export{
-    boost,
-};

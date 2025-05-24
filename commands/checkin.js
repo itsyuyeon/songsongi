@@ -21,7 +21,3 @@ export function checkin(message) {
     message.reply({ embeds: [embed] });
     fs.writeFileSync(`./inventory/${message.author.id}.json`, JSON.stringify(userData, null, 2));
 }
-
-export{
-    checkin,
-};

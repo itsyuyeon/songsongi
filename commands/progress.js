@@ -96,7 +96,3 @@ async function progress(message, group) {
         }, 10000);
     });
 }
-
-export{
-    progress
-};

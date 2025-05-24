@@ -61,7 +61,3 @@ export function removeCard(message, userId, code, amount) {
     fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(receiverData, null, 2));
     message.channel.send(`Removed ${amount}x of card ${code} from <@${userId}>!`);
 }
-
-export{
-    removeCard
-};

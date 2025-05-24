@@ -49,7 +49,3 @@ export function add(message, userId, amount) {
     fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(receiverData, null, 2));
     message.channel.send(`Added ${amount} credits to <@${userId}>'s wallet!`` <:credits:1357992150457126992>`);
 }
-
-export{
-    add
-};

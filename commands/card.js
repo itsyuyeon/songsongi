@@ -155,9 +155,3 @@ export function editCardCode(message, oldCode, newCode) {
         message.reply('Card code not found.');
     }
 }
-
-export{
-    uploadCard,
-    deleteCard,
-    editCardCode,
-};

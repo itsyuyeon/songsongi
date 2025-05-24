@@ -1,47 +1,58 @@
-// view.js
+// commands/view.js
 import fs from 'fs';
 import path from 'path';
-import db from '../db.js';                    // make sure db.js does `export default pool;`
+import pool from '../db.js'; // your pg Pool, exported as default
 import { AttachmentBuilder, EmbedBuilder } from 'discord.js';
 
 export async function view(message, arg) {
-  // (1) Ensure your DB query is inside the fn, not at top level
-  const userId = message.mentions.users.first()?.id || message.author.id;
-  const res = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+  // figure out target user (mention or author)
+  const targetUser = message.mentions.users.first() || message.author;
+  const userId = targetUser.id;
+
+  // ensure they're registered in your users table
+  const res = await pool.query('SELECT 1 FROM users WHERE id = $1', [userId]);
   if (res.rows.length === 0) {
-    return message.reply('you’re not registered in the database yet!');
+    return message.reply('You’re not registered in the database yet!');
   }
 
-  // (2) Load metadata & inventory
-  const metadata = JSON.parse(fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8'));
-  const invPath  = path.resolve(`./inventory/${userId}.json`);
+  // load metadata
+  const metadataPath = path.resolve('./cards/metadata.json');
+  const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
+
+  // load or bail on inventory json
+  const invPath = path.resolve(`./inventory/${userId}.json`);
   if (!fs.existsSync(invPath)) {
     return message.reply(`<@${userId}> doesn’t have any cards yet!`);
   }
   const userInventory = JSON.parse(fs.readFileSync(invPath, 'utf8'));
 
-  // (3) Figure out which code to show
-  let cardCode = arg;
-  if (message.mentions.users.size > 0) {
-    // if they mentioned someone, shift the code arg
+  // determine which code arg to use
+  let codeArg = arg;
+  // if they mentioned someone and then passed a code, skip the mention
+  if (message.mentions.users.size > 0 && arg && arg.startsWith('<@')) {
+    // e.g. ".view @Bob GYUVIN"
     const parts = message.content.split(/\s+/).slice(1);
-    cardCode = parts.find(p => !p.startsWith('<@')) || null;
+    codeArg = parts.find(p => !p.startsWith('<@'));
   }
-  if (!cardCode) {
+  // fallback to last claimed
+  if (!codeArg) {
     if (!userInventory.lastClaimed) {
       return message.reply(`<@${userId}> hasn’t claimed any cards yet!`);
     }
-    cardCode = userInventory.lastClaimed;
+    codeArg = userInventory.lastClaimed;
   }
 
-  // (4) Find the card and how many they own
-  const card = metadata.find(c => c.code.toLowerCase() === cardCode.toLowerCase());
+  // find the card in metadata
+  const card = metadata.find(c => c.code.toLowerCase() === codeArg.toLowerCase());
   if (!card) {
-    return message.reply('card not found in the metadata.');
+    return message.reply('Card not found in metadata.');
   }
-  const owned = userInventory.cards.find(c => c.code === card.code)?.count ?? 0;
 
-  // (5) Build embed
+  // count how many they own
+  const ownedEntry = userInventory.cards.find(c => c.code === card.code);
+  const ownedCount = ownedEntry?.count ?? 0;
+
+  // pick a color based on rarity
   const colorMap = {
     "3G":   "#81b8ff",
     "4G":   "#ffb381",
@@ -49,18 +60,24 @@ export async function view(message, arg) {
     "PRISM":"#ff82d6",
     "LTE":  "#b5b5b5"
   };
-  const colour = colorMap[card.rarity] ?? "#ffffff";
+  const embedColor = colorMap[card.rarity] || "#ffffff";
 
+  // attach the card image
   const imagePath = path.resolve(`./cards/${card.code}.png`);
   if (!fs.existsSync(imagePath)) {
-    return message.reply('card image not found.');
+    return message.reply('Card image not found on disk.');
   }
-
   const attachment = new AttachmentBuilder(imagePath, { name: `${card.code}.png` });
+
+  // build and send embed
   const embed = new EmbedBuilder()
     .setTitle(card.name)
-    .setDescription(`${card.group} — ${card.era}\n**Rarity:** ${card.rarity}\n**Owned by ${message.mentions.users.first()?.username || message.author.username}:** ${owned}×`)
-    .setColor(colour)
+    .setDescription(
+      `${card.group} — ${card.era}\n` +
+      `**Rarity:** ${card.rarity}\n` +
+      `**Owned by ${targetUser.username}:** ${ownedCount}×`
+    )
+    .setColor(embedColor)
     .setImage(`attachment://${card.code}.png`)
     .setFooter({ text: `Card Code: ${card.code}` });
 

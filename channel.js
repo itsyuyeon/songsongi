@@ -17,26 +17,30 @@ const channels = {
   rem: ["1351078225924849726", "1351078245231099914", "1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
   deposit: ["1351078225924849726", "1351078245231099914", "1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
   withdraw: ["1351078225924849726", "1351078245231099914", "1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
-  buy: ["1351078225924849726", "1351078245231099914", "1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
+  buy: ["1351078225924849726", "1351078245231099914", "1351088187388469192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
   checkin: ["1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
   boost: ["1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
   pd: ["1351078115098624030", "1351078152448901220", "1351088187388465192", "1351088251401797641", "1351088300600983635", "1374757960269561907"],
   burn: ["1359095351264411728", "1359095644769357995", "1374757960269561907"]
 };
 
-function isAllowedChannel(channelId) {
+/**
+ * Checks if a channel is globally allowed for unrestricted commands.
+ */
+export function isAllowedChannel(channelId) {
   return allowedChannels.includes(channelId);
 }
 
-function inCorrectChannel(message, command) {
+/**
+ * Verifies if a command may run in the given message's channel.
+ */
+export function inCorrectChannel(message, command) {
   const channelID = message.channel.id;
   const allowedForCommand = channels[command];
-
-  // If command has specific restrictions, enforce them
+  // Enforce specific channel restrictions if defined
   if (allowedForCommand && !allowedForCommand.includes(channelID)) {
     return false;
   }
-
-  // If not restricted, allow as long as it's in allowedChannels
+  // Otherwise fall back to global allowance
   return isAllowedChannel(channelID);
 }

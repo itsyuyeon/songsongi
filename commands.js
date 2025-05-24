@@ -112,5 +112,7 @@ export {
     viewArchive,
     archive,
     unarchive,
+    handleInventoryInteraction,
+    handleFilterSelection
 
 };

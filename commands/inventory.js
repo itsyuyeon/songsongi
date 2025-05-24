@@ -131,7 +131,7 @@ export async function handleFilterSelection(interaction) {
 }
 
 /** Helpers to build Embed / Buttons / Dropdown */
-function generateEmbed(user, cards, page, totalPages) {
+export function generateEmbed(user, cards, page, totalPages) {
   const embed = new EmbedBuilder()
     .setTitle(`${user.username}'s Inventory`)
     .setColor('#52A5FF')
@@ -148,7 +148,7 @@ function generateEmbed(user, cards, page, totalPages) {
   return embed;
 }
 
-function generateButtons() {
+export function generateButtons() {
   return new ActionRowBuilder().addComponents(
     new ButtonBuilder().setCustomId('first_page').setLabel('⏪').setStyle(ButtonStyle.Secondary),
     new ButtonBuilder().setCustomId('prev_page').setLabel('◀️').setStyle(ButtonStyle.Secondary),
@@ -158,7 +158,7 @@ function generateButtons() {
   );
 }
 
-function generateDropdown() {
+export function generateDropdown() {
   return new ActionRowBuilder().addComponents(
     new StringSelectMenuBuilder()
       .setCustomId('filter_inv')

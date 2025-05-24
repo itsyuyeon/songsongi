@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { Pool } from '../db.js';          // adjust path/extension as needed
+import pool from '../db.js';            // default export of your Pool instance
 import {
   EmbedBuilder,
   StringSelectMenuBuilder,
@@ -21,18 +21,25 @@ export function paginate(array, pageSize) {
   }, []);
 }
 
-async function inventory(message) {
+export async function inventory(message) {
   const targetUser = message.mentions.users.first() || message.author;
   const targetId = targetUser.id;
 
-  // Optional: verify user exists in DB
-  const { rows } = await pool.query('SELECT id FROM users WHERE id = $1', [targetId]);
-  if (dbRes.rows.length === 0) {
+  // Verify user exists in DB
+  const { rows } = await pool.query(
+    'SELECT id FROM users WHERE id = $1',
+    [targetId]
+  );
+  if (rows.length === 0) {
     return message.reply('User not found in database.');
   }
 
-  const metadata = JSON.parse(fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8'));
-  const userData = JSON.parse(fs.readFileSync(path.resolve(`./inventory/${targetId}.json`), 'utf8'));
+  const metadata = JSON.parse(
+    fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8')
+  );
+  const userData = JSON.parse(
+    fs.readFileSync(path.resolve(`./inventory/${targetId}.json`), 'utf8')
+  );
 
   // Filter owned cards
   const ownedCodes = new Set(userData.cards.map(c => c.code));
@@ -60,7 +67,11 @@ export function generateEmbed(user, cards, currentPage, totalPages) {
     .setFooter({ text: `Page ${currentPage} of ${totalPages}` });
 
   cards.forEach(card => {
-    embed.addFields({ name: card.code, value: `${card.name} — ${card.group} (${card.rarity})`, inline: false });
+    embed.addFields({
+      name: card.code,
+      value: `${card.name} — ${card.group} (${card.rarity})`,
+      inline: false
+    });
   });
 
   return embed;
@@ -82,17 +93,17 @@ export function generateDropdown() {
       .setCustomId('filter_inv')
       .setPlaceholder('Filter by Rarity')
       .addOptions(
-        { label: 'All', value: 'ALL' },
-        { label: '3G', value: '3G' },
-        { label: '4G', value: '4G' },
-        { label: '5G', value: '5G' },
-        { label: 'LTE', value: 'LTE' },
-        { label: 'PRISM', value: 'PRISM' }
+        new StringSelectMenuOptionBuilder().setLabel('All').setValue('ALL'),
+        new StringSelectMenuOptionBuilder().setLabel('3G').setValue('3G'),
+        new StringSelectMenuOptionBuilder().setLabel('4G').setValue('4G'),
+        new StringSelectMenuOptionBuilder().setLabel('5G').setValue('5G'),
+        new StringSelectMenuOptionBuilder().setLabel('LTE').setValue('LTE'),
+        new StringSelectMenuOptionBuilder().setLabel('PRISM').setValue('PRISM')
       )
   );
 }
 
-async function handleInventoryInteraction(interaction) {
+export async function handleInventoryInteraction(interaction) {
   const state = activeInventories.get(interaction.message.id);
   if (!state || interaction.user.id !== state.userId) {
     return interaction.reply({ content: 'This is not your inventory view.', ephemeral: true });
@@ -108,10 +119,12 @@ async function handleInventoryInteraction(interaction) {
   const pages = paginate(state.cards, 25);
   const totalPages = pages.length;
 
-  if (interaction.customId === 'first_page') state.currentPage = 0;
-  if (interaction.customId === 'prev_page') state.currentPage = Math.max(0, state.currentPage - 1);
-  if (interaction.customId === 'next_page') state.currentPage = Math.min(totalPages - 1, state.currentPage + 1);
-  if (interaction.customId === 'last_page') state.currentPage = totalPages - 1;
+  switch (interaction.customId) {
+    case 'first_page': state.currentPage = 0; break;
+    case 'prev_page':  state.currentPage = Math.max(0, state.currentPage - 1); break;
+    case 'next_page':  state.currentPage = Math.min(totalPages - 1, state.currentPage + 1); break;
+    case 'last_page':  state.currentPage = totalPages - 1; break;
+  }
 
   const currentCards = pages[state.currentPage];
   const embed = generateEmbed(interaction.user, currentCards, state.currentPage + 1, totalPages);
@@ -121,16 +134,25 @@ async function handleInventoryInteraction(interaction) {
   await interaction.update({ embeds: [embed], components: [row, select] });
 }
 
-async function handleFilterSelection(interaction) {
+export async function handleFilterSelection(interaction) {
   const state = activeInventories.get(interaction.message.id);
-  if (!state || interaction.user.id !== state.userId) return interaction.reply({ content: 'Not allowed.', ephemeral: true });
+  if (!state || interaction.user.id !== state.userId) {
+    return interaction.reply({ content: 'Not allowed.', ephemeral: true });
+  }
 
   const filter = interaction.values[0];
-  const metadata = JSON.parse(fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8'));
-  const userData = JSON.parse(fs.readFileSync(path.resolve(`./inventory/${state.userId}.json`), 'utf8'));
+  const metadata = JSON.parse(
+    fs.readFileSync(path.resolve('./cards/metadata.json'), 'utf8')
+  );
+  const userData = JSON.parse(
+    fs.readFileSync(path.resolve(`./inventory/${state.userId}.json`), 'utf8')
+  );
   const ownedCodes = new Set(userData.cards.map(c => c.code));
 
-  state.cards = metadata.filter(c => ownedCodes.has(c.code) && (filter === 'ALL' || c.rarity === filter));
+  state.cards = metadata.filter(c =>
+    ownedCodes.has(c.code) &&
+    (filter === 'ALL' || c.rarity === filter)
+  );
   state.currentPage = 0;
 
   const pages = paginate(state.cards, 25);

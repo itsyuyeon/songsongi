@@ -1,3 +1,11 @@
+process
+  .on('uncaughtException', err => {
+    console.error('Uncaught Exception:', err);
+  })
+  .on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  });
+
 import config from './config.json' assert { type: 'json' };
 import dotenv from 'dotenv';
 dotenv.config();

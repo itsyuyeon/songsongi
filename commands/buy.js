@@ -1,46 +1,63 @@
+// commands/buy.js
 import fs from 'fs';
 import { EmbedBuilder } from 'discord.js';
-import db from '../db.js'; 
+import db from '../db.js';                // your default-exported Pool instance
 
-async function buy(intermsg, cardpack, amount = 1) {
-    const userId = intermsg?.user?.id || intermsg?.author?.id;
-    if (!cardpack || !amount || !userId) {
-        intermsg.reply('Usage: `.buy <cardpack> <amount>`');
-        return;
-    }
+/**
+ * Buy a pack from the shop.
+ *
+ * @param {import('discord.js').Message|import('discord.js').Interaction} intermsg
+ * @param {string} cardpack   the pack code to buy
+ * @param {string|number} amount how many to buy
+ */
+export async function buy(intermsg, cardpack, amount) {
+  // figure out user ID (supports both messageCreate and button interactions)
+  const userId = intermsg.author?.id ?? intermsg.user?.id;
 
-    amount = Math.abs(parseInt(amount));
-    if (isNaN(amount) || amount === 0 || amount > 10) {
-        intermsg.reply(`You cannot buy ${amount} card packs!`);
-        return;
-    }
+  // usage check
+  if (!cardpack || !amount) {
+    return intermsg.reply('usage: `.buy <cardpack> <amount>`');
+  }
 
-    const shopData = JSON.parse(fs.readFileSync('./shop/shop.json', 'utf8'));
-    const item = shopData.find(i => i.code.toLowerCase() === cardpack.toLowerCase());
+  // make sure user exists in Postgres
+  const { rows } = await db.query('SELECT 1 FROM users WHERE id = $1', [userId]);
+  if (rows.length === 0) {
+    return intermsg.reply('you’re not registered yet—run `.start` first!');
+  }
 
-    if (!item) {
-        intermsg.reply('Item not found in the shop.');
-        return;
-    }
+  // load shop config
+  const shopData = JSON.parse(fs.readFileSync('./shop/shop.json', 'utf8'));
+  const item     = shopData.find(i => i.code === cardpack);
+  if (!item) {
+    return intermsg.reply('item not found in the shop!');
+  }
 
-    // Load user from PostgreSQL
-    const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-    if (result.rows.length === 0) {
-        return intermsg.reply('User not found in the database.');
-    }
+  // normalize and validate amount
+  amount = Math.abs(parseInt(amount, 10));
+  if (!amount || amount > 10) {
+    return intermsg.reply('you can buy between 1 and 10 packs at a time.');
+  }
 
-    const user = result.rows[0];
-    const totalCost = item.price * amount;
+  // load the user’s JSON inventory
+  const invPath  = `./inventory/${userId}.json`;
+  const userData = JSON.parse(fs.readFileSync(invPath, 'utf8'));
 
-    if (user.wallet < totalCost) {
-        return intermsg.reply(`Not enough credits! You need ${totalCost - user.wallet} more.`);
-    }
+  // check funds
+  const cost = item.price * amount;
+  if (userData.wallet < cost) {
+    const need = cost - userData.wallet;
+    return intermsg.reply(`You need ${need.toLocaleString()} more credits to buy ${amount}× ${item.name}.`);
+  }
 
-    // Deduct and update wallet
-    await db.query('UPDATE users SET wallet = wallet - $1 WHERE id = $2', [totalCost, userId]);
+  // deduct and add
+  userData.wallet -= cost;
+  for (let i = 0; i < amount; i++) {
+    userData.cardpacks.push(item);
+  }
 
-    // Optionally: Save cardpacks purchase logic if needed
-    // You can store it in a "purchased_packs" table or similar
+  // persist
+  fs.writeFileSync(invPath, JSON.stringify(userData, null, 2));
 
-    intermsg.reply(`✅ You bought \`${amount}\` ${item.name} for \`${totalCost}\` credits!`);
+  // confirm
+  return intermsg.reply(`you bought **${amount}× ${item.name}** for ${cost.toLocaleString()} credits!`);
 }

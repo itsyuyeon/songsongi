@@ -109,22 +109,4 @@ export async function reminderLoop(client) {
     }
   }
 }
-   // reminder.js
-        export async function reminderLoop(client) {
-        setInterval(async () => {
-            const now = Date.now();
-            // Fetch all users (or load all JSON files)…
-            for (const user of allUsers) {
-            // for each key in user.reminder
-            for (const key of ['drop','claim','pd','sync','login','weekly','booster','staff']) {
-                if (user.reminder[key] && now >= user.reminder[key]) {
-                // send them a DM / channel ping:
-                await sendReminder(client, user.id, key);
-                // clear or reschedule:
-                user.reminder[key] = 0; 
-                await saveUser(user);
-                }
-            }
-            }
-        }, 60_000); // every minute
-        }
+ 

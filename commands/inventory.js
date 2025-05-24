@@ -26,7 +26,7 @@ async function inventory(message) {
   const targetId = targetUser.id;
 
   // Optional: verify user exists in DB
-  const dbRes = await Pool.query('SELECT id FROM users WHERE id = $1', [targetId]);
+  const { rows } = await pool.query('SELECT id FROM users WHERE id = $1', [targetId]);
   if (dbRes.rows.length === 0) {
     return message.reply('User not found in database.');
   }

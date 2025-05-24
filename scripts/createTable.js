@@ -22,6 +22,9 @@ import pool from '../db.js'; //
         syncbank INTEGER,
         cardpacks JSONB,
         cards JSONB
+
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS reminders JSONB;
       );
 
       CREATE TABLE IF NOT EXISTS cards (
@@ -35,8 +38,6 @@ import pool from '../db.js'; //
         is_archived BOOLEAN DEFAULT FALSE
       );
 
-      ALTER TABLE users
-      ADD COLUMN IF NOT EXISTS reminders JSONB;
 
     `);
 

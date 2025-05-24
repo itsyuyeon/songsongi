@@ -40,7 +40,7 @@ export async function start(message) {
         pd:      0,
         sync:    0,
         login:   0,
-        weekly:  0,
+        checkin:  0,
         booster: 0,
         staff:   0
       }

@@ -7,7 +7,7 @@ export function checkin(message) {
   // Only server boosters may check in
   const isBooster = Boolean(message.member?.premiumSince);
   if (!isBooster) {
-    return message.reply("You must be a server booster to use this command.");
+    return message.reply("you must be a server booster to use this command.");
   }
 
   // Load & update wallet
@@ -24,8 +24,8 @@ export function checkin(message) {
     .setTitle("Check In Signal Stabilized!")
     .setColor("#FFEE52")
     .setDescription(
-      `✅ 1000 credits have been rewarded.\n\n` +
-      `💰 You currently have **${userData.wallet.toLocaleString()}** credits ` +
+      `1000 credits have been rewarded.\n\n` +
+      `You currently have **${userData.wallet.toLocaleString()}** credits ` +
       `<:credits:1357992150457126992> in your wallet.`
     );
 

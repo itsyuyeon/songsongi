@@ -1,6 +1,6 @@
 import { drop, handleButtonInteraction, paidDrop } from './commands/drop.js';
 import {shop, addShop, removeShop} from "./commands/shop.js";
-import {inventory, filter} from "./commands/inventory.js";
+import { inventory, handleInventoryInteraction, handleFilterSelection } from "./commands/inventory.js";
 import {buy} from "./commands/buy.js";
 import {gift} from "./commands/gift.js";
 import {pay} from"./commands/pay.js";

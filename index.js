@@ -408,6 +408,14 @@ client.on('interactionCreate', async interaction => {
     if (interaction.customId === "filter") {
         cmd.filter(interaction);
     }
+    if (interaction.isButton()) {
+    // inventory page buttons & export
+    await cmd.handleInventoryInteraction(interaction);
+  }
+  else if (interaction.isStringSelectMenu() && interaction.customId === 'filter_inv') {
+    // inventory filter dropdown
+    await cmd.handleFilterSelection(interaction);
+  }
 });
 
 cmd.reminderLoop(client); // Start the reminder loop

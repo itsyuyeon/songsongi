@@ -1,14 +1,14 @@
-const fs = require('fs');
-const path = require('path');
-const { Pool } = require('../db'); // adjust to your db module
-const {
+import fs from 'fs';
+import path from 'path';
+import { Pool } from '../db.js';          // adjust path/extension as needed
+import {
   EmbedBuilder,
   StringSelectMenuBuilder,
   StringSelectMenuOptionBuilder,
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-} = require('discord.js');
+} from 'discord.js';
 
 // In-memory state for pagination
 const activeInventories = new Map();

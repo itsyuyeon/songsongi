@@ -1,4 +1,6 @@
 import db from '../db.js';
+import fs from 'fs';
+import { EmbedBuilder } from 'discord.js';
 
 export async function viewArchive(message) {
   if (!message.member.roles.cache.some(role => role.name === "head admin")) {

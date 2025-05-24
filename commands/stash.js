@@ -1,5 +1,7 @@
 import fs from 'fs';
 import { EmbedBuilder } from 'discord.js';
+import { loadInventory } from './inventory.js';
+
 
 export function stash(message) {
     const embed = new EmbedBuilder()
@@ -9,7 +11,13 @@ export function stash(message) {
     const userId = message.author.id;
 
     if (fs.existsSync(`./inventory/${userId}.json`)) {
-        const userData = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
+        const userData = loadInventory(userId);
+            // ... work with userData ...
+            // when you update it, write back:
+            fs.writeFileSync(
+            `./inventory/${userId}.json`,
+            JSON.stringify(userData, null, 2)
+            );
         if (userData.cardpacks.length > 0) {
             // Count duplicate packs
             const packCounts = {};

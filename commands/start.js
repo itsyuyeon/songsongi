@@ -57,12 +57,19 @@ export async function start(message) {
     reminders:   {},
     cooldown:    {}
   };
-  const invDir = path.resolve('./inventory');
-  if (!fs.existsSync(invDir)) fs.mkdirSync(invDir, { recursive: true });
-  fs.writeFileSync(
-    path.join(invDir, `${userId}.json`),
-    JSON.stringify(initial, null, 2)
-  );
+const invDir = path.resolve('./inventory');
+    if (!fs.existsSync(invDir)) fs.mkdirSync(invDir, { recursive: true });
+    const invPath = path.join(invDir, `${message.author.id}.json`);
+    fs.writeFileSync(invPath,
+    JSON.stringify({
+        wallet:    2000,
+        syncbank:  0,
+        cards:     [],
+        cardpacks: [],
+        reminders: {},
+        cooldown:  {}
+    }, null, 2)
+    );
 
   return message.reply({
     embeds: [

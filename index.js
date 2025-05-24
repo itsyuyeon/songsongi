@@ -285,7 +285,7 @@ client.on('messageCreate', async message => {
                 cmd.setCooldown(message.author.id, 'checkin', 10080); // this one’s synchronous
                 }
                 await cmd.checkin(message);
-                cmd.setReminder(message.author.id, 'checkin', 10080);
+                cmd.setReminder(message.author.id, 'checkin', 7 * 24 * 60 * 60);
                 break;
 
             case 'boost':
@@ -389,12 +389,6 @@ client.on('messageCreate', async message => {
                 cmd.booster(message);
                 cmd.setReminder(message.author.id, 'booster', 7 * 24 * 60 * 60);
                 break;
-
-            case 'weekly':
-                cmd.weekly(message);
-                cmd.setReminder(message.author.id, 'weekly', 7 * 24 * 60 * 60);
-                break;
-
 
         }
     }

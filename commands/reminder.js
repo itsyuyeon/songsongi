@@ -11,7 +11,7 @@ const REMINDER_TYPES = [
   'paidDrop',
   'sync',
   'login',
-  'weekly',   // your booster‐exclusive weekly command
+  'checkin',   // your booster‐exclusive weekly command
   'booster',  // your booster‐exclusive quick command
   'staff'     // staff‐exclusive reminder
 ];

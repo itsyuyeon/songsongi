@@ -35,6 +35,8 @@ import pool from '../db.js'; //
         is_archived BOOLEAN DEFAULT FALSE
       );
 
+      ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS reminders JSONB;
 
     `);
 

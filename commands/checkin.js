@@ -1,7 +1,7 @@
 import fs from 'fs';
 const { EmbedBuilder } = require('discord.js');
 
-function checkin(message) {
+export function checkin(message) {
     //check if user is server booster
     var isBooster = (message.member && message.member.premiumSince);
     if (!isBooster) {

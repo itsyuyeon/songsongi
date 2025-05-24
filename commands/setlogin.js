@@ -1,6 +1,6 @@
-const fs = require("fs");
+import fs from 'fs';
 
-function setLogin(message, userId, amount) {
+export function setLogin(message, userId, amount) {
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {
         message.reply('Only head admins can use this command!');
         return;

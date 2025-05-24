@@ -48,7 +48,7 @@ async function hasStarted(userId) {
     return result.rows.length > 0;
 }
 
-function notStartedMessage(message) {
+export function notStartedMessage(message) {
     message.reply({
         embeds: [
             new EmbedBuilder()

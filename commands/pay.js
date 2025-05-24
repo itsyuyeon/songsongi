@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function pay(message, userId, amount) {
+export function pay(message, userId, amount) {
     if (!userId || !amount) {
         message.channel.send('Usage: `.pay <@username/userid> <all/specific number>');
         return;

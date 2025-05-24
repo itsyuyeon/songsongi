@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function generateCode(rarity, era, name) {
+export function generateCode(rarity, era, name) {
     let code = rarity;
     const eraMatch = era.match(/[A-Z]/g);
     const nameMatch = name.match(/[A-Z]/g);
@@ -17,7 +17,7 @@ function generateCode(rarity, era, name) {
     return code;
 }
 
-function uploadCard(message, rarity, series, group, era, name) {
+export function uploadCard(message, rarity, series, group, era, name) {
     // Check if user has "Head Admins" role
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {
         message.reply('Only Head Admins can use this command!');
@@ -79,7 +79,7 @@ function uploadCard(message, rarity, series, group, era, name) {
     });
 }
 
-function deleteCard(message, code) {
+export function deleteCard(message, code) {
     // Check if user has "Head Admins" role
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {
         message.reply('Only Head Admins can use this command!');

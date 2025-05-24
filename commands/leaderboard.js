@@ -1,7 +1,7 @@
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 import fs from 'fs';
 
-function parseArgs(content) {
+export function parseArgs(content) {
     const args = content.split(/\s+/);
     const filters = {
         type: 'cards',

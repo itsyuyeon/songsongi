@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function warn(message, userId) {
+export function warn(message, userId) {
     if (!message.member.roles.cache.some(role => role.name === "head admin" || role.name === "investigator")) {
         message.reply('You are not allowed to use this!');
         return;

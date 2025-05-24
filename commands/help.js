@@ -1,6 +1,6 @@
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 
-function help(message) {
+export function help(message) {
     const embed = new EmbedBuilder()
         .setColor('#52A5FF')
         .setTitle('Command List')

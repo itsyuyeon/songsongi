@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function staff(message) {
+export function staff(message) {
     // check if user has staff role
     if (!message.member.roles.cache.some(role => role.name === "system operator")) {
         message.reply('Only staff can use this command!');

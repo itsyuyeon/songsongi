@@ -1,7 +1,7 @@
 import fs from 'fs';
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 
-function stash(message) {
+export function stash(message) {
     const embed = new EmbedBuilder()
         .setTitle(`${message.author.username}'s Stash`)
         .setColor('#52A5FF');

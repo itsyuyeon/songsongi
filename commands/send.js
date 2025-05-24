@@ -1,8 +1,8 @@
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 
-function send(message, userId, content) {
-    if (!message.member.roles.cache.some(role => role.name === "Head Admins")) {
-        message.reply('Only Head Admins can use this command!');
+export function send(message, userId, content) {
+    if (!message.member.roles.cache.some(role => role.name === "head admins")) {
+        message.reply('look away, this is not for you!');
         return;
     }
     // Check if the userId is valid

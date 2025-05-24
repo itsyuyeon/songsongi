@@ -1,7 +1,7 @@
-const { EmbedBuilder } = require('discord.js');
-const db = require('../db');
+import { EmbedBuilder } from 'discord.js';
+import db from '../db.js';
 
-async function balance(message, arg) {
+export async function balance(message, arg) {
     let targetUser = message.mentions.users.first();
     let targetId;
 
@@ -13,7 +13,7 @@ async function balance(message, arg) {
         targetUser = message.author;
         targetId = targetUser.id;
     }
-
+}    
     // Fetch user from database
     const result = await db.query('SELECT * FROM users WHERE id = $1', [targetId]);
     if (result.rows.length === 0) {
@@ -48,7 +48,6 @@ async function balance(message, arg) {
         );
 
     message.channel.send({ embeds: [embed] });
-}
 
 export{
     balance

@@ -1,8 +1,8 @@
 import fs from 'fs';
-const  { EmbedBuilder } = require('discord.js');
-const {isCooldown, setCooldown} = require('./cooldown.js');
+import { EmbedBuilder } from 'discord.js';
+import {isCooldown, setCooldown} from './cooldown.js';
 
-function randomCard(rarity) {
+export function randomCard(rarity) {
     const metadata = JSON.parse(fs.readFileSync(`./cards/metadata.json`, 'utf8'));
     var cards;
     if (rarity == "signal") {

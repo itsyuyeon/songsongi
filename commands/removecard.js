@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-function removeCard(message, userId, code, amount) {
+export function removeCard(message, userId, code, amount) {
     const hasAdminRole = message.member.roles.cache.some(role =>
         role.name === "head admin" || role.name === "community staff"
     );

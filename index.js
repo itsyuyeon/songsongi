@@ -172,8 +172,15 @@ client.on('messageCreate', async message => {
             case 'bio':
                 await cmd.bio(message, args.join(' '));break;
 
+            case 'fav':
+            // .fav <code>  (same as favourite)
+                await cmd.profileCard(message, args[0], null);
+                 break;
+
             case 'pc':
-                await cmd.profileCard(message, args[0]);break;
+                // .pc <code> <slot>
+                 await cmd.profileCard(message, args[0], args[1]);
+                 break;
 
             case 'view':
             case 'v':

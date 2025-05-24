@@ -13,7 +13,7 @@ const {
 // In-memory state for pagination
 const activeInventories = new Map();
 
-function paginate(array, pageSize) {
+export function paginate(array, pageSize) {
   return array.reduce((acc, val, i) => {
     const pageIndex = Math.floor(i / pageSize);
     acc[pageIndex] = [...(acc[pageIndex] || []), val];
@@ -53,7 +53,7 @@ async function inventory(message) {
   await message.reply({ embeds: [embed], components: [row, select] });
 }
 
-function generateEmbed(user, cards, currentPage, totalPages) {
+export function generateEmbed(user, cards, currentPage, totalPages) {
   const embed = new EmbedBuilder()
     .setTitle(`${user.username}'s Inventory`)
     .setColor('#52A5FF')
@@ -66,7 +66,7 @@ function generateEmbed(user, cards, currentPage, totalPages) {
   return embed;
 }
 
-function generateButtons() {
+export function generateButtons() {
   return new ActionRowBuilder().addComponents(
     new ButtonBuilder().setCustomId('first_page').setLabel('⏪').setStyle(ButtonStyle.Secondary),
     new ButtonBuilder().setCustomId('prev_page').setLabel('◀️').setStyle(ButtonStyle.Secondary),
@@ -76,7 +76,7 @@ function generateButtons() {
   );
 }
 
-function generateDropdown() {
+export function generateDropdown() {
   return new ActionRowBuilder().addComponents(
     new StringSelectMenuBuilder()
       .setCustomId('filter_inv')

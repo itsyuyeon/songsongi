@@ -1,7 +1,7 @@
 import fs from 'fs';
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 
-function hoardList(message) {
+export function hoardList(message) {
     const userData = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));
     const list = userData.hoard.list;
     // split the list into 3 arrays for 3G, 4G, 5G rarity
@@ -43,7 +43,7 @@ function hoardList(message) {
     message.channel.send({ embeds: [embed]});
 }
 
-function hoardSet(message, credits) {
+export function hoardSet(message, credits) {
     if (!credits) {
         message.channel.send("Usage: `.hset <limit>`");
         return;
@@ -62,7 +62,7 @@ function hoardSet(message, credits) {
     }
 }
 
-function hoardAdd(message, code) {
+export function hoardAdd(message, code) {
     if (!code) {
         message.channel.send("Usage: `.ha <code>`");
         return;
@@ -87,7 +87,7 @@ function hoardAdd(message, code) {
     message.channel.send(`Added ${code} to your hoard!`);
 }
 
-function hoardRemove(message, code) {
+export function hoardRemove(message, code) {
     if (!code) {
         message.channel.send("Usage: `.hr <code>`");
         return;

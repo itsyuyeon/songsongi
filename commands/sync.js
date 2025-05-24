@@ -1,6 +1,6 @@
 import fs from 'fs';
-const { EmbedBuilder } = require('discord.js');
-const {isCooldown, setCooldown} = require('./cooldown.js');
+import { EmbedBuilder } from 'discord.js';
+import {isCooldown, setCooldown} from './cooldown.js';
 
 function sync(message) {
     const userData = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));

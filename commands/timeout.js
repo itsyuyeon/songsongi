@@ -1,7 +1,7 @@
 import fs from 'fs';
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
 
-function timeout(message, userId, time) {
+export function timeout(message, userId, time) {
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {
         message.reply('Only Head Admins can use this command!');
         return;
@@ -24,13 +24,13 @@ function timeout(message, userId, time) {
     message.reply(`<@${userId}> has been timed out for ${time} minutes.`);
 }
 
-function removeTimeout(userId) {
+export function removeTimeout(userId) {
     const moderation = JSON.parse(fs.readFileSync('./moderation/moderation.json', 'utf8'));
     moderation.timeout = moderation.timeout.filter(timeout => timeout.userId !== userId);
     fs.writeFileSync('./moderation/moderation.json', JSON.stringify(moderation, null, 2));
 }
 
-function isTimeout(userId) {
+export function isTimeout(userId) {
     const moderation = JSON.parse(fs.readFileSync('./moderation/moderation.json', 'utf8'));
     const timeoutUser = moderation.timeout.find(timeout => timeout.userId === userId);
     if (timeoutUser) {
@@ -39,7 +39,7 @@ function isTimeout(userId) {
     return false;
 }
 
-function timeoutMessage(message) {
+export function timeoutMessage(message) {
     const moderation = JSON.parse(fs.readFileSync('./moderation/moderation.json', 'utf8'));
     const timeoutUser = moderation.timeout.find(timeout => timeout.userId === userId);
     const timeLeft = Math.ceil((timeoutUser.time - Date.now()) / 60000);

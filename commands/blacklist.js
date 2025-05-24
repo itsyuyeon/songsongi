@@ -1,11 +1,12 @@
 import fs from 'fs';
+import { EmbedBuilder } from 'discord.js';
 
-function isBlacklisted(userId) {
+export function isBlacklisted(userId) {
     const moderation = JSON.parse(fs.readFileSync('./moderation/moderation.json', 'utf8'));
     return moderation.blacklist.includes(userId);
 }
 
-function blacklistMessage(message) {
+export function blacklistMessage(message) {
     message.reply({
         embeds: [
             new EmbedBuilder()
@@ -16,19 +17,19 @@ function blacklistMessage(message) {
     });
 }
 
-function addToBlacklist(userId) {
+export function addToBlacklist(userId) {
     const moderation = JSON.parse(fs.readFileSync('./moderation/moderation.json', 'utf8'));
     moderation.blacklist.push(userId);
     fs.writeFileSync('./moderation/moderation.json', JSON.stringify(blacklist, null, 2));
 }
 
-function removeFromBlacklist(userId) {
+export function removeFromBlacklist(userId) {
     const moderation = JSON.parse(fs.readFileSync('./moderation/moderation.json', 'utf8'));
     moderation.blacklist = moderation.blacklist.filter(user => user !== userId);
     fs.writeFileSync('./moderation/moderation.json', JSON.stringify(moderation, null, 2));
 }
 
-function blacklist(message, userId) {
+export function blacklist(message, userId) {
     // check for valid user ID
     if (!userId) {
         return message.channel.send("Please provide a valid user ID.");
@@ -54,7 +55,7 @@ function blacklist(message, userId) {
     return message.channel.send(`User <@${userId}> has been blacklisted.`);
 }
 
-function unblacklist(message, userId) {
+export function unblacklist(message, userId) {
     // check for valid user ID
     if (!userId) {
         return message.channel.send("Please provide a valid user ID.");

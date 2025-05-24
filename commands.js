@@ -18,7 +18,7 @@ import {send} from"./commands/send.js";
 import {warn} from"./commands/warn.js";
 import {profile, bio, profileCard, colour} from"./commands/profile.js";
 import {view} from"./commands/view.js";
-import {cooldown, isCooldown, cooldownMessage, setCooldown} from"./commands/cooldown.js";
+import { cooldown, isCooldown, cooldownMessage, setCooldown } from './commands/cooldown.js';
 import {reminder, setReminder, reminderLoop} from"./commands/reminder.js";
 import {leaderboard} from"./commands/leaderboard.js";
 import {progress} from"./commands/progress.js";

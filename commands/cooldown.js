@@ -1,103 +1,109 @@
+// commands/cooldown.js
 import fs from 'fs';
 import { EmbedBuilder } from 'discord.js';
-import db from '../db.js'; 
+import path from 'path';
 
-const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-if (result.rows.length === 0) {
-    // User not found, handle accordingly
-    console.error('User not found in the database');
-}
-
+/**
+ * Show all of a user’s cooldown timers.
+ */
 export function cooldown(message) {
-    const userId = message.author.id;
-    const username = message.author.username;
-    const inventory = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
+  const userId = message.author.id;
+  const userDataPath = path.resolve('./inventory', `${userId}.json`);
+  if (!fs.existsSync(userDataPath)) {
+    return message.reply('No inventory data found.');
+  }
 
-    const dropTime = inventory.cooldown.drop - Date.now();
-    const dropText = dropTime > 0
-    ? `${Math.floor(dropTime / 60000)}m ${Math.floor((dropTime % 60000) / 1000)}s`
-    : "Ready";
+  const inv = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+  const now = Date.now();
 
-    const claimTime = inventory.cooldown.claim - Date.now();
-    const claimText = claimTime > 0
-    ? `${Math.floor(claimTime / 60000)}m ${Math.floor((claimTime % 60000) / 1000)}s`
-    : "Ready";
+  const format = ms => ms > 0
+    ? `${Math.floor(ms/60000)}m ${Math.floor((ms%60000)/1000)}s`
+    : 'Ready';
 
-    const paidDropTime = inventory.cooldown.paidDrop - Date.now();
-    const paidDropText = paidDropTime > 0
-    ? `${Math.floor(paidDropTime / 60000)}m ${Math.floor((paidDropTime % 60000) / 1000)}s`
-    : "Ready";
+  const drop   = format(inv.cooldown.drop   - now);
+  const claim  = format(inv.cooldown.claim  - now);
+  const pd     = format(inv.cooldown.pd     - now);
+  const sync   = format(inv.cooldown.sync   - now);
+  const login  = inv.cooldown.login > now
+    ? `${Math.floor((inv.cooldown.login-now)/3600000)}h ${Math.floor(((inv.cooldown.login-now)%3600000)/60000)}m`
+    : 'Ready';
 
-    const syncTime = inventory.cooldown.sync - Date.now();
-    const syncText = syncTime > 0
-     ? `${Math.floor(syncTime / 60000)}m ${Math.floor((syncTime % 60000) / 1000)}s`
-     : "Ready";
+  const embed = new EmbedBuilder()
+    .setTitle(`${message.author.username}'s cooldowns`)
+    .setColor('#F37B4E')
+    .addFields(
+      { name: 'Drop',        value: drop,   inline: false },
+      { name: 'Claim',       value: claim,  inline: false },
+      { name: 'Paid Drop',   value: pd,     inline: false },
+      { name: 'Sync',        value: sync,   inline: false },
+      { name: 'Login',       value: login,  inline: false },
+    );
 
-    const loginTime = inventory.cooldown.login - Date.now();
-    const loginText = loginTime > 0
-    ? `${Math.floor(loginTime / 3600000)}h ${Math.floor((loginTime % 3600000) / 60000)}m`
-    : "Ready";
+  // booster-only cooldowns
+  if (message.member?.premiumSince) {
+    const checkin       = format(inv.cooldown.checkin       - now);
+    const boosterDrop   = format(inv.cooldown.boosterDrop   - now);
+    const boosterClaim  = format(inv.cooldown.boosterClaim  - now);
+    const boost         = inv.cooldown.boost > now
+      ? `${Math.floor((inv.cooldown.boost-now)/3600000)}h ${Math.floor(((inv.cooldown.boost-now)%3600000)/60000)}m`
+      : 'Ready';
 
+    embed.addFields(
+      { name: 'Boost',         value: boost,       inline: false },
+      { name: 'Check-in',      value: checkin,     inline: false },
+      { name: 'Booster Drop',  value: boosterDrop, inline: false },
+      { name: 'Booster Claim', value: boosterClaim,inline: false },
+    );
+  }
 
-    // const loginSec = loginTime % 60;
-    
-    const embed = new EmbedBuilder()
-        .setTitle(`${username}'s cooldowns`)
-        .setColor("#F37B4E")
-        .addFields(
-            { name: "", value: `**Drop:** ${dropText}`, inline: false },
-            { name: "", value: `**Claim:** ${claimText}`, inline: false },
-            { name: "", value: `**Paid Drop:** ${paidDropText}`, inline: false },
-            { name: "", value: `**Sync:** ${syncText}`, inline: false },
-            { name: "", value: `**Login:** ${loginText}`, inline: false }
-        )
-    // check if user is a server booster
-    if (message.member && message.member.premiumSince) {
-        const checkinTime = inventory.cooldown.checkin-Date.now()>0?Math.floor((inventory.cooldown.checkin - Date.now()) / 1000):0;
-        const checkinMin = Math.floor(checkinTime / 60);
-        const checkinHrs = Math.floor(checkinTime / 3600);
-        const boostTime = inventory.cooldown.boost-Date.now()>0?Math.floor((inventory.cooldown.boost - Date.now()) / 1000):0;
-        const boostMin = Math.floor(boostTime / 60);
-        const boostHrs = Math.floor(boostTime / 3600);
-        const boosterDropTime = inventory.cooldown.boosterDrop-Date.now()>0?Math.floor((inventory.cooldown.boosterDrop - Date.now()) / 1000):0;
-        const boosterDropMin = Math.floor(boosterDropTime / 60);
-        const boosterDropSec = boosterDropTime % 60;
-        const boosterClaimTime = inventory.cooldown.boosterClaim-Date.now()>0?Math.floor((inventory.cooldown.boosterClaim - Date.now()) / 1000):0;
-        const boosterClaimMin = Math.floor(boosterClaimTime / 60);
-        const boosterClaimSec = boosterClaimTime % 60;
-        embed.addFields({ name: "", value: `**Boost:** ${boostHrs}h ${boostMin}m`, inline: false });
-        embed.addFields({ name: "", value: `**Checkin:** ${checkinHrs}h ${checkinMin}m`, inline: false });
-        embed.addFields({ name: "", value: `**Booster Drop:** ${boosterDropMin}m ${boosterDropSec}s`, inline: false });
-        embed.addFields({ name: "", value: `**Booster Claim:** ${boosterClaimMin}m ${boosterClaimSec}s`, inline: false });
-    }
-    fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(inventory, null, 2));
-    message.channel.send({ embeds: [embed] });
+  return message.reply({ embeds: [embed] });
 }
 
+/**
+ * Returns true if the given command is still on cooldown for that user.
+ */
 export function isCooldown(userId, command) {
-    const inventory = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
-    return inventory.cooldown[command] > Date.now();
+  const userDataPath = path.resolve('./inventory', `${userId}.json`);
+  if (!fs.existsSync(userDataPath)) return false;
+  const inv = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+  return (inv.cooldown[command] || 0) > Date.now();
 }
 
+/**
+ * Tell the user how much time remains on a specific cooldown.
+ */
 export function cooldownMessage(message, command) {
-    const inventory = JSON.parse(fs.readFileSync(`./inventory/${message.author.id}.json`, 'utf8'));
-    const timeLeft = Math.floor((inventory.cooldown[command] - Date.now()) / 1000);
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    message.reply({
-        embeds: [
-            new EmbedBuilder()
-                .setTitle(`**You are on cooldown for ${command}**`)
-                .setDescription(`You have to wait ${minutes}m ${seconds}s before using this command again.`)
-                .setColor("#F9768C")
-        ]
-    });
+  const userId = message.author.id;
+  const userDataPath = path.resolve('./inventory', `${userId}.json`);
+  if (!fs.existsSync(userDataPath)) {
+    return message.reply('No inventory data found.');
+  }
+  const inv = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+  const remaining = inv.cooldown[command] - Date.now();
+  const seconds = Math.max(0, Math.floor(remaining / 1000));
+  const minutes = Math.floor(seconds / 60);
+  const secs     = seconds % 60;
+
+  const embed = new EmbedBuilder()
+    .setTitle(`⏳ ${command} cooldown`)
+    .setDescription(`Please wait ${minutes}m ${secs}s before using **${command}** again.`)
+    .setColor('#F9768C');
+
+  return message.reply({ embeds: [embed] });
 }
 
-export function setCooldown(userId, command, time) {
-    const inventory = JSON.parse(fs.readFileSync(`./inventory/${userId}.json`, 'utf8'));
-    inventory.cooldown[command] = Date.now() + time*60000;
-    fs.writeFileSync(`./inventory/${userId}.json`, JSON.stringify(inventory, null, 2));
-    return inventory.cooldown[command];
+/**
+ * Set a cooldown on a command for a user, in minutes.
+ * @returns the timestamp (ms since epoch) when the cooldown will end.
+ */
+export function setCooldown(userId, command, minutes) {
+  const userDataPath = path.resolve('./inventory', `${userId}.json`);
+  let inv = { cooldown: {} };
+  if (fs.existsSync(userDataPath)) {
+    inv = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
+  }
+  inv.cooldown = inv.cooldown || {};
+  inv.cooldown[command] = Date.now() + minutes * 60_000;
+  fs.writeFileSync(userDataPath, JSON.stringify(inv, null, 2));
+  return inv.cooldown[command];
 }
-

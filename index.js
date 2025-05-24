@@ -6,7 +6,7 @@ dotenv.config();
 import { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import fs from 'fs';
 
-import cmd from './commands.js';
+import * as cmd from './commands.js';
 import { inCorrectChannel, isAllowedChannel } from './channel.js';
 import pool from './db.js'; // adjust path as needed
 

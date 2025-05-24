@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder } from 'discord.js';
 import { createCanvas, loadImage } from 'canvas';
-import { setReminder } from './commands/reminder.js';   // <-- import the scheduler
+import { setReminder } from './reminder.js';    // <-- import the scheduler
 
 // Store active drops and last claim timestamps
 export const activeDrops = new Map();

@@ -49,7 +49,6 @@ export {
     gift,
     pay,
     handleButtonInteraction,
-    filter,
     uploadCard,
     deleteCard,
     stash,

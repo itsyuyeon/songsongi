@@ -7,7 +7,6 @@ const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
 if (result.rows.length === 0) {
     // User not found, handle accordingly
     console.error('User not found in the database');
-    return;
 }
 
 function cooldown(message) {

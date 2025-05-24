@@ -8,7 +8,7 @@ import fs from 'fs';
 
 import cmd from './commands.js';
 import { inCorrectChannel, isAllowedChannel } from './channel.js';
-import pool from '../db.js'; // adjust path as needed
+import pool from './db.js'; // adjust path as needed
 
 const client = new Client({
   intents: [

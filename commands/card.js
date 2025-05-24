@@ -114,7 +114,7 @@ export function deleteCard(message, code) {
     }
 }
 
-function editCardCode(message, oldCode, newCode) {
+export function editCardCode(message, oldCode, newCode) {
     // Check if user has "Head Admins" role
     if (!message.member.roles.cache.some(role => role.name === "head admin")) {
         message.reply('Only Head Admins can use this command!');

@@ -7,7 +7,7 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import fs from 'fs';
 
 // ✅ Move this up before using any `cmd`
-import cmd from './commands.js';
+const cmd = require('./commands.js');
 const { inCorrectChannel, isAllowedChannel} = require('./channel.js');
 
 const client = new Client({
@@ -93,9 +93,10 @@ client.on('messageCreate', async (message) => {
 
             case 'shop':
             case 'Shop':
-            case 'SHOP':
-                    if (!inCorrectChannel(message, 'shop')) return;
-                cmd.shop(message);break;
+            case 'SHOP':    
+             if (!inCorrectChannel(message, 'shop')) return;
+             await cmd.shop(message);
+             break;
 
             case 'buy':
                 if (!inCorrectChannel(message, 'buy')) return;

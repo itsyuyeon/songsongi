@@ -155,4 +155,3 @@ function processSales(message, sales, senderData, receiverData, metadata, receiv
   );
 }
 
-export { sell };

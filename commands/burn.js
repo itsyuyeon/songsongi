@@ -148,5 +148,3 @@ export function burn(message, codes) {
   fs.writeFileSync(invFile, JSON.stringify(userData, null, 2));
   message.reply({ embeds: [embed] });
 }
-
-export { burn };

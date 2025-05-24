@@ -44,7 +44,3 @@ export function help(message) {
 
     message.reply({ embeds: [embed] });
 }
-
-export{
-    help
-};

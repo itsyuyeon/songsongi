@@ -47,6 +47,23 @@ export async function start(message) {
     ]
   );
 
+    // then *create* the on-disk inventory file:
+  const initial = {
+    wallet:    2000,
+    syncbank:    0,
+    cards:       [],
+    cardpacks:   [],
+    // if you use reminders in JSON too, you can kick that off here:
+    reminders:   {},
+    cooldown:    {}
+  };
+  const invDir = path.resolve('./inventory');
+  if (!fs.existsSync(invDir)) fs.mkdirSync(invDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(invDir, `${userId}.json`),
+    JSON.stringify(initial, null, 2)
+  );
+
   return message.reply({
     embeds: [
       new EmbedBuilder()

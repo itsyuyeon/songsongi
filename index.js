@@ -18,7 +18,7 @@ const client = new Client({
 
 // start the reminder loop once we're ready
 client.once('ready', () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
+  console.log(`Logged in as ${client.user.tag}`);
   reminderLoop(client);
 });
 

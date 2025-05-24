@@ -1,14 +1,12 @@
-// index.js
 import config from './config.json' assert { type: 'json' };
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-import fs from 'fs';
-
-import * as cmd from './commands.js';
+import { Client, GatewayIntentBits } from 'discord.js';
+import * as cmd from './commands.js';               
 import { inCorrectChannel, isAllowedChannel } from './channel.js';
-import pool from './db.js'; // adjust path as needed
+import pool from './db.js';
+import { reminderLoop, stopReminderLoop } from './commands/reminder.js';
 
 const client = new Client({
   intents: [
@@ -18,53 +16,54 @@ const client = new Client({
   ]
 });
 
-client.on('messageCreate', async message => {
-  console.log(`Message: "${message.content}" in ${message.channel.id}`);
+// start the reminder loop once we're ready
+client.once('ready', () => {
+  console.log(`✅ Logged in as ${client.user.tag}`);
+  reminderLoop(client);
+});
 
+// graceful shutdown of the reminder loop
+process.on('SIGINT',  () => { stopReminderLoop(); process.exit(0); });
+process.on('SIGTERM', () => { stopReminderLoop(); process.exit(0); });
+
+// login
+client.login(process.env.TOKEN);
+
+// test DB connection
+(async () => {
+  try {
+    const { rows } = await pool.query('SELECT NOW()');
+    console.log('✅ Connected to DB at:', rows[0].now);
+  } catch (err) {
+    console.error('Database connection failed:', err);
+  }
+})();
+
+client.on('messageCreate', async message => {
   if (message.author.bot) return;
   if (!isAllowedChannel(message.channel.id)) return;
   if (!message.content.startsWith(config.prefix)) return;
 
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/);
+  const args = message.content
+    .slice(config.prefix.length)
+    .trim()
+    .split(/\s+/);
   const command = args.shift().toLowerCase();
 
+  // START handling
   if (command === 'start') {
     return cmd.start(message);
   }
-  if (!cmd.hasStarted(message.author.id)) {
+
+  // require synced
+  if (!await cmd.hasStarted(message.author.id)) {
     return cmd.notStartedMessage(message);
   }
-  if (cmd.isTimeout(message.author.id)) {
-    return cmd.timeoutMessage(message);
-  } else {
-    cmd.removeTimeout(message.author.id);
-  }
-  if (cmd.isBlacklisted(message.author.id)) {
-    return cmd.blacklistMessage(message);
-  }
 
-    if (!message.content.startsWith(config.prefix)) return; { // Check if the message starts with the prefix
-        const args = message.content.slice(config.prefix.length).trim().split(/ +/);
-        const command = args.shift().toLowerCase();
-        // Check if the user is in the database
-        if (command === 'start') {
-            cmd.start(message);
-            return;
-            
-        }
-        if (!cmd.hasStarted(message.author.id)) {
-            return cmd.notStartedMessage(message);
-        }
-        // Check if the user is timed out
-        if (cmd.isTimeout(message.author.id)) {
-            return cmd.timeoutMessage(message);
-        } else {
-            cmd.removeTimeout(message.author.id);
-        }
-        // Check if the user is blacklisted
-        if (cmd.isBlacklisted(message.author.id)) {
-            return cmd.blacklistMessage(message);   
-        }
+  // timeouts & blacklist
+  if (cmd.isTimeout(message.author.id)) return cmd.timeoutMessage(message);
+  cmd.removeTimeout(message.author.id);
+  if (cmd.isBlacklisted(message.author.id)) return cmd.blacklistMessage(message);
 
             switch (command) {
             case 'drop':
@@ -212,8 +211,9 @@ client.on('messageCreate', async message => {
 
             case 'reminder':
             case 'rem':
-                if (!inCorrectChannel(message, 'rem')) return;
-                await cmd.reminder(message, args[0], args[1]);break;
+                if (!inCorrectChannel(message,'rem')) return;
+                await cmd.reminder(message, args[0], args[1]);
+            break;
 
             case 'leaderboard':
             case 'lb':
@@ -392,7 +392,7 @@ client.on('messageCreate', async message => {
 
         }
     }
-});
+);
 
 (async () => {
   try {
@@ -403,25 +403,20 @@ client.on('messageCreate', async message => {
   }
 })();
 
+// interactionCreate for buttons & select menus
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isButton() && !interaction.isAnySelectMenu()) return;
+  if (interaction.isButton()) {
     if (interaction.customId.startsWith('pick_')) {
-        cmd.handleButtonInteraction(interaction);
+      await cmd.handleButtonInteraction(interaction);
+    }
+    // inventory pagination buttons
+    await cmd.handleInventoryInteraction(interaction);
+  } else if (interaction.isStringSelectMenu()) {
+    if (interaction.customId === 'filter_inv') {
+      await cmd.handleFilterSelection(interaction);
     }
     if (interaction.customId.startsWith('buy_')) {
-        cmd.buy(interaction, interaction.customId.split('_')[1], 1);
+      await cmd.buy(interaction, interaction.customId.split('_')[1], 1);
     }
-    if (interaction.customId === "filter") {
-        cmd.filter(interaction);
-    }
-    if (interaction.isButton()) {
-    // inventory page buttons & export
-    await cmd.handleInventoryInteraction(interaction);
-  }
-  else if (interaction.isStringSelectMenu() && interaction.customId === 'filter_inv') {
-    // inventory filter dropdown
-    await cmd.handleFilterSelection(interaction);
   }
 });
-
-cmd.reminderLoop(client); // Start the reminder loop

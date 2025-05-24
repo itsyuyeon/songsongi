@@ -1,5 +1,5 @@
-const { EmbedBuilder } = require('discord.js');
-const db = require('../db');
+import { EmbedBuilder } from 'discord.js';
+import db from '../db.js'; 
 
 async function start(message) {
     const userId = message.author.id;

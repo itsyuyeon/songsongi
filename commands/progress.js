@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
 
-const db = require('../db');
+import db from '../db.js'; 
 
 const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
 if (result.rows.length === 0) {

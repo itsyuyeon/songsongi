@@ -1,7 +1,6 @@
 import fs from 'fs';
-const { EmbedBuilder } = require('discord.js');
-
-const db = require('../db');
+import { EmbedBuilder } from 'discord.js';
+import db from '../db.js'; 
 
 const result = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
 if (result.rows.length === 0) {

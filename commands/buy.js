@@ -1,5 +1,6 @@
 import fs from 'fs';
-const db = require('../db');
+import { EmbedBuilder } from 'discord.js';
+import db from '../db.js'; 
 
 async function buy(intermsg, cardpack, amount = 1) {
     const userId = intermsg?.user?.id || intermsg?.author?.id;
